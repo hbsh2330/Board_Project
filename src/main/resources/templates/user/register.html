@@ -2,13 +2,12 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>회원가입</title>
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
     <link rel="stylesheet" th:href="@{/user/resources/stylesheets/register.css}">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script defer th:src="@{/resources/scripts/common.js}"></script>
     <script defer th:src="@{/user/resources/scripts/register.js}"></script>
 </head>
@@ -19,8 +18,7 @@
     <img alt="X" class="close" rel="close" th:src="@{/user/resources/images/register.addressFind.close.png}">
     <div class="modal"></div>
 </div>
-<form class="content-container-wrapper" id="main" data-step="2"
-      th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.yhp.studybbs.regexes.EmailAuthRegex)}">
+<form class="content-container-wrapper" id="main" data-step="2" th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.yhp.studybbs.regexes.EmailAuthRegex)}">
     <input hidden name="infoEmailSalt" type="hidden">
     <div class="content-container title-container">
         <h1 class="title">회원가입</h1>
@@ -76,52 +74,47 @@
             <label class="label email">
                 <span class="text">이메일</span>
                 <span class="horizontal">
-                    <input class="big common-field" maxlength="50" name="infoEmail" placeholder="이메일(user@sample.com)"
-                           type="email" th:data-regex="${userRegex.EMAIL.expression}">
+                    <input class="big common-field" maxlength="50" name="infoEmail" placeholder="이메일(user@sample.com)" type="email" th:data-regex="${userRegex.EMAIL.expression}">
                     <input class="common-button" name="infoEmailSend" type="button" value="인증번호 발송">
                 </span>
                 <span class="horizontal">
-                    <input disabled class="big common-field" maxlength="6" minlength="6" name="infoEmailCode"
-                           placeholder="이메일 인증번호(숫자 6자)"
-                           type="number" th:data-regex="${emailAuthRegex.CODE.expression}">
+                    <input disabled class="big common-field" maxlength="6" minlength="6" name="infoEmailCode" placeholder="이메일 인증번호(숫자 6자)" type="number" th:data-regex="${emailAuthRegex.CODE.expression}">
                     <input disabled class="common-button" name="infoEmailVerify" type="button" value="인증번호 확인">
                 </span>
                 <span class="complete" rel="infoEmailComplete">이메일 인증이 완료되었습니다.</span>
-                <label class="label password">
-                    <span class="text">비밀번호</span>
-                    <input class="common-field big" maxlength="50" name="infoPassword" type="password"
-                           placeholder="비밀번호 입력">
-                    <input class="common-field big" maxlength="50" name="infoPasswordCheck" type="password"
-                           placeholder="비밀번호 재입력">
-                </label>
-                <label class="label name-contact">
-                    <span class="text">신원정보</span>
-                    <input class="common-field" maxlength="5" name="infoName" type="text">
-                    <span class="horizontal contact">
-                        <select class="common-field big" name="infoContactCompany">
-                            <option disabled hidden selected value="-1">통신사</option>
-                            <option th:each="contactCompany : ${contactCompanies}"
-                                    th:value="${contactCompany.getCode()}"
-                                    th:text="${contactCompany.getText()}"></option>
-                        </select>
-                        <input class="common-field" maxlength="4" name="infoContactFirst" type="text" placeholder="010"
-                               th:data-regex="${userRegex.CONTACT_FIRST.expression}">
-                        <input class="common-field" maxlength="4" name="infoContactSecond" type="text"
-                               placeholder="0000"
-                               th:data-regex="${userRegex.CONTACT_SECOND.expression}">
-                        <input class="common-field" maxlength="4" name="infoContactThird" type="text" placeholder="0000"
-                               th:data-regex="${userRegex.CONTACT_THIRD.expression}">
+            </label>
+            <label class="label password">
+                <span class="text">비밀번호</span>
+                <input class="common-field" maxlength="50" name="infoPassword" placeholder="비밀번호" type="password" th:data-regex="${userRegex.PASSWORD.expression}">
+                <input class="common-field" maxlength="50" name="infoPasswordCheck" placeholder="비밀번호 재입력" type="password">
+            </label>
+            <label class="label nickname">
+                <span class="text">닉네임</span>
+                <input class="common-field" maxlength="10" name="infoNickname" placeholder="닉네임" type="text" th:data-regex="${userRegex.NICKNAME.expression}">
+            </label>
+            <label class="label name-contact">
+                <span class="text">신원 정보</span>
+                <input class="common-field" maxlength="5" name="infoName" placeholder="이름" type="text" th:data-regex="${userRegex.NAME.expression}">
+                <span class="horizontal contact">
+                    <select class="common-field big" name="infoContactCompany">
+                        <option disabled hidden selected value="-1">통신사</option>
+                        <option th:each="contactComapny : ${contactCompanies}"
+                                th:value="${contactComapny.getCode()}"
+                                th:text="${contactComapny.getText()}"></option>
+                    </select>
+                    <input class="common-field" maxlength="4" name="infoContactFirst" placeholder="010" type="text" th:data-regex="${userRegex.CONTACT_FIRST.expression}">
+                    <input class="common-field" maxlength="4" name="infoContactSecond" placeholder="0000" type="text" th:data-regex="${userRegex.CONTACT_SECOND.expression}">
+                    <input class="common-field" maxlength="4" name="infoContactThird" placeholder="0000" type="text" th:data-regex="${userRegex.CONTACT_THIRD.expression}">
                 </span>
-                </label>
-                <label class="label address">
-                    <span class="text">주소</span>
-                    <span class="horizontal">
-                        <input readonly class="common-field" maxlength="5" name="infoAddressPostal" placeholder="우편번호" type="text">
-                        <input class="common-button" name="infoAddressFind" type="button" value="주소찾기">
-                    </span>
-                    <input readonly class="common-field" maxlength="100" name="infoAddressPrimary" placeholder="기본주소" type="text">
-                    <input class="common-field" maxlength="100" name="infoAddressSecondary" placeholder="상세주소" type="text">
-                </label>
+            </label>
+            <label class="label address">
+                <span class="text">주소</span>
+                <span class="horizontal">
+                    <input readonly class="common-field big" maxlength="5" name="infoAddressPostal" placeholder="우편번호" type="text" th:data-regex="${userRegex.ADDRESS_POSTAL.expression}">
+                    <input class="common-button" name="infoAddressFind" type="button" value="주소 찾기">
+                </span>
+                <input readonly class="common-field" maxlength="100" name="infoAddressPrimary" placeholder="기본 주소(주소 찾기 버튼을 클릭해 주세요.)" type="text" th:data-regex="${userRegex.ADDRESS_PRIMARY.expression}">
+                <input class="common-field" maxlength="100" name="infoAddressSecondary" placeholder="상세 주소(건물명, 동, 호수 등)" type="text" th:data-regex="${userRegex.ADDRESS_SECONDARY.expression}">
             </label>
         </div>
     </div>

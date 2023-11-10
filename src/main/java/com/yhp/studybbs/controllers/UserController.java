@@ -2,6 +2,8 @@ package com.yhp.studybbs.controllers;
 
 import com.yhp.studybbs.entities.ContactCompanyEntity;
 import com.yhp.studybbs.entities.EmailAuthEntity;
+import com.yhp.studybbs.entities.UserEntity;
+import com.yhp.studybbs.results.user.RegisterResult;
 import com.yhp.studybbs.results.user.SendRegisterEmailResult;
 import com.yhp.studybbs.results.user.VerifyRegisterEmailResult;
 import com.yhp.studybbs.services.UserService;
@@ -44,6 +46,19 @@ public class UserController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "register",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postRegister(@RequestParam(value = "termMarketingAgreed") boolean termMarketingAgreed,
+                               UserEntity user,
+                               EmailAuthEntity emailAuth) {
+        RegisterResult result = this.userService.registerResult(user, emailAuth, termMarketingAgreed);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
+    }
+
     @RequestMapping(value = "registerEmail",
             method = RequestMethod.POST, //포스트 방식으로 서버로 전송
             produces = MediaType.APPLICATION_JSON_VALUE) //제이슨 방식으로 전달
@@ -62,12 +77,14 @@ public class UserController {
             method = RequestMethod.PATCH,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String patchRegisterEmail(EmailAuthEntity emailAuth) {
-        VerifyRegisterEmailResult result = this.userService.verifyRegisterEmail(emailAuth);
-        JSONObject responseObject = new JSONObject();
-        responseObject.put("result", result.name().toLowerCase());
-        return responseObject.toString();
+    public String patchRegisterEmail(EmailAuthEntity emailAuth) { //값을 넘겨주기 위한 매개변수
+        VerifyRegisterEmailResult result = this.userService.verifyRegisterEmail(emailAuth); //userService가 가지고 있는 매소드를 실행
+        JSONObject responseObject = new JSONObject(); //json객체 생성
+        responseObject.put("result", result.name().toLowerCase()); // json객체에 키값이 result이고 값이 VerifyRegisterEmailResult를 가져와서 소문자로 변환
+        return responseObject.toString(); //받은 값을 문자열로 리턴시켜줌
     }
+
+
 }
 
 

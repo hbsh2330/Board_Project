@@ -112,8 +112,14 @@
 
 #main > .step-container.info > .info-container {
     width: 100%;
-    max-width: 30rem;
+    max-width: 25rem;
     align-self: center;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    justify-content: flex-start;
 }
 
 #main > .step-container.info > .info-container > .label {
@@ -143,19 +149,26 @@
 
 #main > .step-container.info > .info-container > .label.email > .complete {
     max-height: 0;
-    background-color: #85c1e9;
+    background-color: #aed6f1;
     border-radius: 0.375rem;
     color: #1b4f72;
+    margin-top: -0.5rem;
     overflow: hidden;
     padding: 0 1rem;
     transition-duration: 250ms;
-    transition-property: max-height;
+    transition-property: max-height, margin-top, padding;
     transition-timing-function: ease;
 }
 
 #main > .step-container.info > .info-container > .label.email > .complete.visible {
     max-height: 2.5rem;
+    margin-top: 0;
     padding: 0.625rem 1rem;
+}
+
+#main > .step-container.info > .info-container > .label.name-contact > .contact > input.common-field {
+    width: 3.5rem;
+    text-align: center;
 }
 
 #main > .button-container {
@@ -167,11 +180,6 @@
     flex-direction: row;
     gap: 0.5rem;
     justify-content: center;
-}
-
-#main > .step-container.info > .info-container > .label.name-contact > .contact > input.common-field {
-    width: 3rem;
-    text-align: center;
 }
 
 #main > .button-container > .button {
@@ -232,9 +240,9 @@
     width: 100%;
     height: 100%;
     backdrop-filter: blur(0.25rem);
+    background-color: #17202aa0;
     opacity: 0;
     pointer-events: none;
-    background-color: #17202aa0;
     position: fixed;
     transition-duration: 250ms;
     transition-property: opacity;
@@ -256,7 +264,7 @@
 }
 
 #addressFind > .modal {
-    top: 50%;
+    top: calc(50% + 1rem);
     left: 50%;
     width: 25rem;
     height: 30rem;

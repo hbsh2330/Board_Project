@@ -20,7 +20,7 @@
     </select>
 
     <select id="selectEmailAuthByEmailCodeSalt"
-            resultType="com.yhp.studybbs.entities.EmailAuthEntity">
+            resultType="com.yhp.studybbs.entities.EmailAuthEntity"> #  resultType을 쓴 이유는 UserMapper에 @Param으로 지정해줬기 때문 만약 매개변수에 객체를 받아오면 parameterType을 써야한다.
         SELECT `email`         AS `email`,
                `code`          AS `code`,
                `salt`          AS `salt`,
@@ -58,9 +58,87 @@
         WHERE BINARY `email` = #{email}
         LIMIT 1
     </select>
+    <select id="selectUserByContact"
+            resultType="com.yhp.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFirst`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addressPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `contact_first` = #{contactFirst}
+        AND `contact_second` = #{contactSecond}
+        AND `contact_third` = #{contactThird}
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByNickname"
+            resultType="com.yhp.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFirst`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addressPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `nickname` = #{nickname}
+
+        LIMIT 1
+    </select>
+
+    <insert id="insertUser"
+            parameterType="com.yhp.studybbs.entities.UserEntity">
+        INSERT INTO `study_bbs`.`users`(email, password, nickname, name, contact_company_code, contact_first,
+                                        contact_second, contact_third, address_postal, address_primary,
+                                        address_secondary, admin_flag, deleted_flag, suspended_flag, registered_at,
+                                        term_policy_at, term_privacy_at, term_marketing_at)
+        VALUES (#{email},
+                #{password},
+                #{nickname},
+                #{name},
+                #{contactCompanyCode},
+                #{contactFirst},
+                #{contactSecond},
+                #{contactThird},
+                #{addressPostal},
+                #{addressPrimary},
+                #{addressSecondary},
+                #{isadmin},
+                #{isDeleted},
+                #{isSuspended},
+                #{registeredAt},
+                #{term_policyAt},
+                #{term_privacyAt},
+                #{term_marketingAt})
+    </insert>
+
 
     <update id="updateEmailAuth" parameterType="com.yhp.studybbs.entities.EmailAuthEntity">
-
         UPDATE `study_bbs`.`email_auths`
         SET `verified_flag` = #{isVerified},
             `created_at`    = #{createdAt},
