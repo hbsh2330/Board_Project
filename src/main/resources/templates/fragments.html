@@ -31,16 +31,24 @@
             <a class="link" href="#">Q&A</a>
         </li>
         <li class="spring"></li>
-        <li class="item user">
+        <li class="item user" th:if="${session.user == null}">
+<!--            세션의 값이 null일때 로그인이 안되어있을때-->
             <a class="link" th:href="@{/user/login}">
                 <img alt="" class="icon" th:src="@{/user/resources/images/header.user-login.png}">
                 <span class="text">로그인</span>
             </a>
         </li>
-        <li class="item user">
+        <li class="item user" th:if="${session.user == null}">
             <a class="link" th:href="@{/user/register}">
                 <img alt="" class="icon" th:src="@{/user/resources/images/header.user-register.png}">
                 <span class="text">회원가입</span>
+            </a>
+        </li>
+        <li class="item user" th:if="${session.user != null}">
+<!--            로그인이 되어있을때-->
+            <a class="link" th:href="@{/user/logout}">
+                <img alt="" class="icon" th:src="@{/user/resources/images/header.user.logout.png}">
+                <span class="text">로그아웃</span>
             </a>
         </li>
     </ul>

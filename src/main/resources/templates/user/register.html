@@ -18,7 +18,7 @@
     <img alt="X" class="close" rel="close" th:src="@{/user/resources/images/register.addressFind.close.png}">
     <div class="modal"></div>
 </div>
-<form class="content-container-wrapper" id="main" data-step="2" th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.yhp.studybbs.regexes.EmailAuthRegex)}">
+<form class="content-container-wrapper" id="main" data-step="1" th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.yhp.studybbs.regexes.EmailAuthRegex)}">
     <input hidden name="infoEmailSalt" type="hidden">
     <div class="content-container title-container">
         <h1 class="title">회원가입</h1>
@@ -118,8 +118,11 @@
             </label>
         </div>
     </div>
-    <div class="content-container step-container" data-step="3">
-        완료 내용
+    <div class="content-container step-container complete" data-step="3">
+        <div class="content">
+            <span class="title">회원가입이 완료되었습니다.</span>
+            <span class="message">BBS에 회원가입해 주셔서 감사드립니다. 아래 '로그인하러 가기'버튼을 클릭하여 로그인해 주세요.</span>
+        </div>
     </div>
     <div class="content-container button-container">
         <a class="button cancel" th:href="@{/}">취소</a>

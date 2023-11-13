@@ -200,6 +200,23 @@
     user-select: none;
 }
 
+#main > .step-container.complete > .content {
+    max-width: 30rem;
+    align-self: center;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: flex-start;
+}
+
+#main > .step-container.complete > .content > .title {
+    color: #808b96;
+    font-size: 2.25rem;
+}
+
+
 #main > .button-container > .button:hover {
     filter: brightness(95%);
 }

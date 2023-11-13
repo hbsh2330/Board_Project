@@ -274,84 +274,211 @@ mainForm.onsubmit = function (e) {
             }
             break;
         case 2:
-            if (!mainForm['infoEmail'].hasAttribute('disabled') || !mainForm['infoEmailCode'].hasAttribute('disabled')){
+            if (!mainForm['infoEmail'].hasAttribute('disabled') || !mainForm['infoEmailCode'].hasAttribute('disabled')) {
                 dialog.show({
                     title: '경고',
-                    content: '이메일 인증을 완료해 주세요',
-                    buttons: [
-                        dialog.createButton('확인', dialog.hide)],
+                    content: '이메일 인증을 완료해 주세요.',
+                    buttons: [dialog.createButton('확인', dialog.hide)]
                 });
-                return ;
+                return;
             }
             if (mainForm['infoPassword'].value === '') {
                 dialog.show({
                     title: '경고',
-                    content: '비밀번호를 입력해 주세요',
-                    buttons: [
-                        dialog.createButton('확인', dialog.hide)],
+                    content: '비밀번호를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoPassword'].focus();
+                    })]
                 });
-                return ;
+                return;
             }
-            if (mainForm['infoPasswordCheck'].value === ''){
+            if (!mainForm['infoPassword'].testRegex()) {
                 dialog.show({
                     title: '경고',
-                    content: '비밀번호 재입력을 입력해 주세요',
-                    buttons: [
-                        dialog.createButton('확인', dialog.hide)],
+                    content: '올바른 비밀번호를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoPassword'].focus();
+                        mainForm['infoPassword'].select();
+                    })]
                 });
-                return ;
+                return;
             }
-            if (mainForm['infoContactCompany'].value === '-1'){
+            if (mainForm['infoPasswordCheck'].value === '') {
+                dialog.show({
+                    title: '경고',
+                    content: '비밀번호를 한번 더 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoPasswordCheck'].focus();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoPassword'].value !== mainForm['infoPasswordCheck'].value) {
+                dialog.show({
+                    title: '경고',
+                    content: '비밀번호가 일치하지 않습니다.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoPasswordCheck'].focus();
+                        mainForm['infoPasswordCheck'].select();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoNickname'].value === '') {
+                dialog.show({
+                    title: '경고',
+                    content: '닉네임을 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoNickname'].focus();
+                    })]
+                });
+                return;
+            }
+            if (!mainForm['infoNickname'].testRegex()) {
+                dialog.show({
+                    title: '경고',
+                    content: '올바른 닉네임을 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoNickname'].focus();
+                        mainForm['infoNickname'].select();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoName'].value === '') {
+                dialog.show({
+                    title: '경고',
+                    content: '이름을 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoName'].focus();
+                    })]
+                });
+                return;
+            }
+            if (!mainForm['infoName'].testRegex()) {
+                dialog.show({
+                    title: '경고',
+                    content: '올바른 이름을 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoName'].focus();
+                        mainForm['infoName'].select();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoContactCompany'].value === '-1') {
                 dialog.show({
                     title: '경고',
                     content: '통신사를 선택해 주세요.',
-                    buttons: [
-                        dialog.createButton('확인', function () {
-                            dialog.hide();
-                            mainForm['infoContactCompany'].focus();
-                        })]
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactCompany'].focus();
+                    })]
                 });
-                return ;
+                return;
             }
-            if (mainForm['infoContactFirst'].value === ''){
+            if (mainForm['infoContactFirst'].value === '') {
                 dialog.show({
                     title: '경고',
                     content: '연락처를 입력해 주세요.',
-                    buttons: [
-                        dialog.createButton('확인', function () {
-                            dialog.hide();
-                            mainForm['infoContactFirst'].focus();
-                        })]
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactFirst'].focus();
+                    })]
                 });
-                return ;
+                return;
             }
-            if (mainForm['infoAddressPostal'].value === ''|| !mainForm['infoAddressPrimary'].value === ''){
+            if (!mainForm['infoContactFirst'].testRegex()) {
                 dialog.show({
                     title: '경고',
-                    content: '주소찾기 버튼을 클릭하여 주소를 선택해 주세요',
-                    buttons: [
-                        dialog.createButton('확인', dialog.hide)],
+                    content: '올바른 연락처를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactFirst'].focus();
+                        mainForm['infoContactFirst'].select();
+                    })]
                 });
-                return ;
+                return;
             }
-            if (!mainForm['infoAddressSecondary'].testRegex()){
+            if (mainForm['infoContactSecond'].value === '') {
                 dialog.show({
                     title: '경고',
-                    content: '상세주소가 올바르지 않습니다.',
-                    buttons: [
-                        dialog.createButton('확인', function () {
-                            dialog.hide();
-                            mainForm['infoAddressSecondary'].focus();
-                            mainForm['infoAddressSecondary'].select();
-                        })]
+                    content: '연락처를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactSecond'].focus();
+                    })]
                 });
-                return ;
+                return;
+            }
+            if (!mainForm['infoContactSecond'].testRegex()) {
+                dialog.show({
+                    title: '경고',
+                    content: '올바른 연락처를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactSecond'].focus();
+                        mainForm['infoContactSecond'].select();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoContactThird'].value === '') {
+                dialog.show({
+                    title: '경고',
+                    content: '연락처를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactThird'].focus();
+                    })]
+                });
+                return;
+            }
+            if (!mainForm['infoContactThird'].testRegex()) {
+                dialog.show({
+                    title: '경고',
+                    content: '올바른 연락처를 입력해 주세요.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoContactThird'].focus();
+                        mainForm['infoContactThird'].select();
+                    })]
+                });
+                return;
+            }
+            if (mainForm['infoAddressPostal'].value === '' || mainForm['infoAddressPrimary'].value === '') {
+                dialog.show({
+                    title: '경고',
+                    content: '주소 찾기 버튼을 클릭하여 주소를 선택해 주세요.',
+                    buttons: [dialog.createButton('확인', dialog.hide)]
+                });
+                return;
+            }
+            if (!mainForm['infoAddressSecondary'].testRegex()) {
+                dialog.show({
+                    title: '경고',
+                    content: '상세 주소가 올바르지 않습니다.',
+                    buttons: [dialog.createButton('확인', function () {
+                        dialog.hide();
+                        mainForm['infoAddressSecondary'].focus();
+                        mainForm['infoAddressSecondary'].select();
+                    })]
+                });
+                return;
             }
             const xhr = new XMLHttpRequest();
             const formData = new FormData();
             formData.append('termMarketingAgreed', mainForm['termMarketingAgree'].checked);
-            formData.append('email', mainForm['infoEmail'].value); //멤버 변수 이름과 name=email이 같아서 들어감
-            formData.append('code', mainForm['infoEmilCode'].value);
+            formData.append('email', mainForm['infoEmail'].value);
+            formData.append('code', mainForm['infoEmailCode'].value);
             formData.append('salt', mainForm['infoEmailSalt'].value);
             formData.append('password', mainForm['infoPassword'].value);
             formData.append('nickname', mainForm['infoNickname'].value);
@@ -363,77 +490,79 @@ mainForm.onsubmit = function (e) {
             formData.append('addressPostal', mainForm['infoAddressPostal'].value);
             formData.append('addressPrimary', mainForm['infoAddressPrimary'].value);
             formData.append('addressSecondary', mainForm['infoAddressSecondary'].value);
-            xhr.onreadystatechange = function (){
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState !== XMLHttpRequest.DONE) {
-                    return; //만약 xhr의 준비가 완료되지 않았다면 retun
+                    return;
                 }
-                if (xhr.status >= 200 && xhr.status < 300) { //만약 상태코드가 200보다 크거나, 상태코드가 300보다 작으면
+                if (xhr.status >= 200 && xhr.status < 300) {
                     const responseObject = JSON.parse(xhr.responseText);
-                    switch (responseObject['result']){
-                        case 'failure' :
-
+                    switch (responseObject['result']) {
+                        case 'failure':
+                            dialog.show({
+                                title: '오류',
+                                content: '알 수 없는 이유로 회원가입하지 못하였습니다.<br><br>잠시 후 다시 시도해 주세요.',
+                                buttons: [dialog.createButton('확인', dialog.hide)]
+                            });
                             break;
                         case 'failure_duplicate_email':
                             dialog.show({
                                 title: '경고',
-                                content: '해당 이메일은 이미 사용중입니다.',
-                                buttons: [
-                                    dialog.createButton('확인', function () {
-                                        dialog.hide();
-                                        mainForm['infoEmailSalt'].value = '';
-                                        mainForm['infoEmail'].removeAttribute('disabled');
-                                        mainForm['infoEmail'].focus();
-                                        mainForm['infoEmail'].select();
-                                        mainForm['infoEmailSend'].removeAttribute('disabled');
-                                        mainFormn['infoEmailCode'].value = '';
-                                        mainForm.querySelector('[rel="infoEmailComplete"]').classList.remove('visible')
-                                    })]
+                                content: '해당 이메일은 이미 사용 중입니다.<br><br>회원가입 도중 해당 이메일이 이미 회원가입에 사용되었을 수 있습니다.',
+                                buttons: [dialog.createButton('확인', function () {
+                                    dialog.hide();
+                                    mainForm['infoEmailSalt'].value = '';
+                                    mainForm['infoEmail'].removeAttribute('disabled');
+                                    mainForm['infoEmail'].focus();
+                                    mainForm['infoEmail'].select();
+                                    mainForm['infoEmailSend'].removeAttribute('disabled');
+                                    mainForm['infoEmailCode'].value = '';
+                                    mainForm.querySelector('[rel="infoEmailComplete"]').classList.remove('visible');
+                                })]
                             });
                             break;
-                        case 'failure_duplicate_nickname' :
+                        case 'failure_duplicate_nickname':
                             dialog.show({
                                 title: '경고',
-                                content: '해당 닉네임은 이미 사용중입니다..',
-                                buttons: [
-                                    dialog.createButton('확인', function () {
-                                        dialog.hide();
-                                        mainForm['infoNickname'].focus();
-                                        mainForm['infoNickname'].select();
-                                    })]
+                                content: '해당 닉네임은 이미 사용 중입니다.<br><br>다른 닉네임을 입력해 주세요.',
+                                buttons: [dialog.createButton('확인', function () {
+                                    dialog.hide();
+                                    mainForm['infoNickname'].focus();
+                                    mainForm['infoNickname'].select();
+                                })]
                             });
                             break;
                         case 'failure_duplicate_contact':
                             dialog.show({
                                 title: '경고',
-                                content: '해당 연락처는 이미 사용 중입니다..',
-                                buttons: [
-                                    dialog.createButton('확인', function () {
-                                        dialog.hide();
-                                    })]
+                                content: '해당 연락처는 이미 사용 중입니다.<br><br>다른 연락처를 입력해 주세요.',
+                                buttons: [dialog.createButton('확인', function () {
+                                    dialog.hide();
+                                    mainForm['infoContactFirst'].focus();
+                                    mainForm['infoContactFirst'].select();
+                                })]
                             });
                             break;
                         case 'success':
                             dialog.show({
                                 title: '회원가입',
                                 content: '회원가입이 완료되었습니다.',
-                                buttons: [
-                                    dialog.createButton('확인', function () {
-                                        dialog.hide();
-                                        mainForm.dataset.step = '3';
-                                    })]
+                                buttons: [dialog.createButton('확인', function() {
+                                    dialog.hide();
+                                    mainForm.dataset.step = '3';
+                                })]
                             });
                             break;
                         default:
                             dialog.show({
                                 title: '오류',
-                                content: '서버가 예상치못한 응답을 반환하였습니다.',
+                                content: '서버가 예상치 못한 응답을 반환하였습니다.<br><br>잠시 후 다시 시도해 주세요.',
                                 buttons: [dialog.createButton('확인', dialog.hide)]
                             });
                     }
-                    }else{
+                } else {
                     dialog.show({
                         title: '오류',
-                        content: '서버가 응답하지 않습니다. 나중에 다시 시도해주세요.',
+                        content: '요청을 전송하는 도중 예상치 못한 오류가 발생하였습니다.<br><br>잠시 후 다시 시도해 주세요.',
                         buttons: [dialog.createButton('확인', dialog.hide)]
                     });
                 }
@@ -446,6 +575,6 @@ mainForm.onsubmit = function (e) {
     }
 }
 
-addressFind.querySelector('[rel=close]').onclick = function (){
-    addressFind.classList.remove('visible')
+addressFind.querySelector('[rel="close"]').onclick = function () {
+    addressFind.classList.remove('visible');
 }

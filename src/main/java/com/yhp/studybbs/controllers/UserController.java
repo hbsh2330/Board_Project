@@ -3,6 +3,7 @@ package com.yhp.studybbs.controllers;
 import com.yhp.studybbs.entities.ContactCompanyEntity;
 import com.yhp.studybbs.entities.EmailAuthEntity;
 import com.yhp.studybbs.entities.UserEntity;
+import com.yhp.studybbs.results.user.LoginResult;
 import com.yhp.studybbs.results.user.RegisterResult;
 import com.yhp.studybbs.results.user.SendRegisterEmailResult;
 import com.yhp.studybbs.results.user.VerifyRegisterEmailResult;
@@ -11,13 +12,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value = "user")
@@ -32,17 +32,42 @@ public class UserController {
     @RequestMapping(value = "login",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView getLogin() {
-        return new ModelAndView("user/login");
+    public ModelAndView getLogin(@SessionAttribute(value = "user", required = false)UserEntity user) { //세션저장소에서 가져옴
+        ModelAndView modelAndView = new ModelAndView();
+        if(user == null){ // 세션이 없으면
+            modelAndView.setViewName("user/login");
+        } else { //세션이 있으면
+            modelAndView.setViewName("redirect:/");
+        }
+        return modelAndView;
     }
 
     @RequestMapping(value = "register",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView getRegister() {
+    public ModelAndView getRegister(@SessionAttribute(value = "user", required = false) UserEntity user) {
         ContactCompanyEntity[] contactCompanyEntities = this.userService.getContactCompanies();
-        ModelAndView modelAndView = new ModelAndView("user/register");
-        modelAndView.addObject("contactCompanies", contactCompanyEntities);
+        ModelAndView modelAndView = new ModelAndView();
+        if (user == null){
+            ContactCompanyEntity[] companyEntities = this.userService.getContactCompanies();
+            modelAndView.setViewName("user/register");
+            modelAndView.addObject("contactCompanies", companyEntities);
+        }else {
+            modelAndView.setViewName("redirect:/");
+        }
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "recoverEmail", //이메일 찾기
+    method = RequestMethod.GET,
+    produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView getRecoverEmail(@SessionAttribute(value = "user", required = false)UserEntity user){
+        ModelAndView modelAndView = new ModelAndView();
+        if (user == null){
+            modelAndView.setViewName("user/recoverEmail");
+        }else {
+            modelAndView.setViewName("redirect:/");
+        }
         return modelAndView;
     }
 
@@ -73,6 +98,24 @@ public class UserController {
         return responseObject.toString(); //그러한 responseObject의 문자를 반환함
     }
 
+    @RequestMapping(value = "login",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postLogin(HttpSession session,
+                  UserEntity user){
+        LoginResult result = this.userService.login(session, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
+    }
+
+    @RequestMapping(value = "logout", method = RequestMethod.GET) //로그아웃 기능구현
+    public ModelAndView getLogout(HttpSession session){
+        session.setAttribute("user", null);
+        return new ModelAndView("redirect:/");
+    }
+
     @RequestMapping(value = "registerEmail",
             method = RequestMethod.PATCH,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,8 +127,19 @@ public class UserController {
         return responseObject.toString(); //받은 값을 문자열로 리턴시켜줌
     }
 
-
+    @RequestMapping(value = "resetPassword", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView getResetPasword(@SessionAttribute(value = "user", required = false)UserEntity user){
+        ModelAndView modelAndView = new ModelAndView();
+        if (user == null){
+            modelAndView.setViewName("user/resetPassword");
+        }else {
+            modelAndView.setViewName("redirect:/");
+        }
+        return modelAndView;
+    }
 }
+
+//TODO : 이메일 찾기()
 
 
 

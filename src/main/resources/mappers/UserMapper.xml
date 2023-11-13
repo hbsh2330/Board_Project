@@ -128,13 +128,13 @@
                 #{addressPostal},
                 #{addressPrimary},
                 #{addressSecondary},
-                #{isadmin},
+                #{isAdmin},
                 #{isDeleted},
                 #{isSuspended},
                 #{registeredAt},
-                #{term_policyAt},
-                #{term_privacyAt},
-                #{term_marketingAt})
+                #{termPolicyAt},
+                #{termPrivacyAt},
+                #{termMarketingAt})
     </insert>
 
 

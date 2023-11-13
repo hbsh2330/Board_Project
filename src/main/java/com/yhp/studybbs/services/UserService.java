@@ -6,6 +6,7 @@ import com.yhp.studybbs.entities.UserEntity;
 import com.yhp.studybbs.mappers.UserMapper;
 import com.yhp.studybbs.regexes.EmailAuthRegex;
 import com.yhp.studybbs.regexes.UserRegex;
+import com.yhp.studybbs.results.user.LoginResult;
 import com.yhp.studybbs.results.user.RegisterResult;
 import com.yhp.studybbs.results.user.SendRegisterEmailResult;
 import com.yhp.studybbs.results.user.VerifyRegisterEmailResult;
@@ -21,6 +22,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 
 @Service
@@ -134,16 +136,39 @@ public class UserService {
 
             return RegisterResult.FAILURE_DUPICATE_NICKNAME;
         }
-        user.setPassword(CryptoUtil.hashSha512(user.getPassword()));
+        user.setPassword(CryptoUtil.hashSha512(user.getPassword())); //클라이언트로 부터 받지 않는 정보들은 백단에서 set해서 막아줄 필요가 있다.
+        user.setAdmin(false);
+        user.setDeleted(false);
+        user.setSuspended(false);
         user.setRegisteredAt(new Date());
         user.setTermPolicyAt(user.getRegisteredAt());
         user.setTermPrivacyAt(user.getRegisteredAt());
         if (termMarketingAgreed){
             user.setTermPrivacyAt(user.getRegisteredAt());
+        } else {
+            user.setTermPrivacyAt(null);
         }
         return this.userMapper.insertUser(user) > 0
                 ? RegisterResult.SUCCESS
                 : RegisterResult.FAILURE;
+        }
+
+        public LoginResult login(HttpSession session, UserEntity user){ //
+        if (!UserRegex.EMAIL.matches(user.getEmail())|| !UserRegex.PASSWORD.matches(user.getPassword())){
+            return LoginResult.FAILURE;
+        }
+        UserEntity dbUser = this.userMapper.selectUserByEmail(user.getEmail()); //모든 데이터 다 가지고 있음
+        if (dbUser == null) {
+            return LoginResult.FAILURE;
+        }// 너가 준 이메일 레코드가 없음, 이메일 잘못적음
+        if (!dbUser.getPassword().equals(CryptoUtil.hashSha512(user.getPassword()))){
+            return LoginResult.FAILURE; // 비밀번호 잘못적음
+        }
+        if(dbUser.isSuspended()){
+            return LoginResult.FAILURE_SUSPENDED; //계정이 정지된 상태라면
+        }
+        session.setAttribute("user", dbUser);
+        return LoginResult.SUCCESS;
         }
 }
 
