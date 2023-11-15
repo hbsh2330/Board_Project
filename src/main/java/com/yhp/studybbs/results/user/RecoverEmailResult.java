@@ -1,7 +1,6 @@
 package com.yhp.studybbs.results.user;
 
-public enum LoginResult {
+public enum RecoverEmailResult {
     FAILURE,
-    FAILURE_SUSPENDED,
     SUCCESS
 }

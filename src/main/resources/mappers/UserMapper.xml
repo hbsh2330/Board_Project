@@ -12,7 +12,14 @@
                 #{expiresAt})
     </insert>
 
-    <select id="selectContactCompanies" resultType="com.yhp.studybbs.entities.ContactCompanyEntity">
+    <insert id="insertUser"
+            parameterType="com.yhp.studybbs.entities.UserEntity">
+        INSERT INTO `study_bbs`.`users` (`email`, `password`, `nickname`, `name`, `contact_company_code`, `contact_first`, `contact_second`, `contact_third`, `address_postal`, `address_primary`, `address_secondary`, `admin_flag`, `deleted_flag`, `suspended_flag`, `registered_at`, `term_policy_at`, `term_privacy_at`, `term_marketing_at`)
+        VALUES (#{email}, #{password}, #{nickname}, #{name}, #{contactCompanyCode}, #{contactFirst}, #{contactSecond}, #{contactThird}, #{addressPostal}, #{addressPrimary}, #{addressSecondary}, #{isAdmin}, #{isDeleted}, #{isSuspended}, #{registeredAt}, #{termPolicyAt}, #{termPrivacyAt}, #{termMarketingAt})
+    </insert>
+
+    <select id="selectContactCompanies"
+            resultType="com.yhp.studybbs.entities.ContactCompanyEntity">
         SELECT `code` AS `code`,
                `text` AS `text`
         FROM `study_bbs`.`contact_companies`
@@ -20,7 +27,7 @@
     </select>
 
     <select id="selectEmailAuthByEmailCodeSalt"
-            resultType="com.yhp.studybbs.entities.EmailAuthEntity"> #  resultType을 쓴 이유는 UserMapper에 @Param으로 지정해줬기 때문 만약 매개변수에 객체를 받아오면 parameterType을 써야한다.
+            resultType="com.yhp.studybbs.entities.EmailAuthEntity">
         SELECT `email`         AS `email`,
                `code`          AS `code`,
                `salt`          AS `salt`,
@@ -31,6 +38,33 @@
         WHERE BINARY `email` = #{email}
           AND BINARY `code` = #{code}
           AND BINARY `salt` = #{salt}
+        LIMIT 1
+    </select>
+
+    <select id="selectUserByContact"
+            resultType="com.yhp.studybbs.entities.UserEntity">
+        SELECT `email`                AS `email`,
+               `password`             AS `password`,
+               `nickname`             AS `nickname`,
+               `name`                 AS `name`,
+               `contact_company_code` AS `contactCompanyCode`,
+               `contact_first`        AS `contactFirst`,
+               `contact_second`       AS `contactSecond`,
+               `contact_third`        AS `contactThird`,
+               `address_postal`       AS `addressPostal`,
+               `address_primary`      AS `addressPrimary`,
+               `address_secondary`    AS `addressSecondary`,
+               `admin_flag`           AS `isAdmin`,
+               `deleted_flag`         AS `isDeleted`,
+               `suspended_flag`       AS `isSuspended`,
+               `registered_at`        AS `registeredAt`,
+               `term_policy_at`       AS `termPolicyAt`,
+               `term_privacy_at`      AS `termPrivacyAt`,
+               `term_marketing_at`    AS `termMarketingAt`
+        FROM `study_bbs`.`users`
+        WHERE BINARY `contact_first` = #{contactFirst}
+          AND BINARY `contact_second` = #{contactSecond}
+          AND BINARY `contact_third` = #{contactThird}
         LIMIT 1
     </select>
 
@@ -58,32 +92,6 @@
         WHERE BINARY `email` = #{email}
         LIMIT 1
     </select>
-    <select id="selectUserByContact"
-            resultType="com.yhp.studybbs.entities.UserEntity">
-        SELECT `email`                AS `email`,
-               `password`             AS `password`,
-               `nickname`             AS `nickname`,
-               `name`                 AS `name`,
-               `contact_company_code` AS `contactCompanyCode`,
-               `contact_first`        AS `contactFirst`,
-               `contact_second`       AS `contactSecond`,
-               `contact_third`        AS `contactThird`,
-               `address_postal`       AS `addressPostal`,
-               `address_primary`      AS `addressPrimary`,
-               `address_secondary`    AS `addressSecondary`,
-               `admin_flag`           AS `isAdmin`,
-               `deleted_flag`         AS `isDeleted`,
-               `suspended_flag`       AS `isSuspended`,
-               `registered_at`        AS `registeredAt`,
-               `term_policy_at`       AS `termPolicyAt`,
-               `term_privacy_at`      AS `termPrivacyAt`,
-               `term_marketing_at`    AS `termMarketingAt`
-        FROM `study_bbs`.`users`
-        WHERE BINARY `contact_first` = #{contactFirst}
-        AND `contact_second` = #{contactSecond}
-        AND `contact_third` = #{contactThird}
-        LIMIT 1
-    </select>
 
     <select id="selectUserByNickname"
             resultType="com.yhp.studybbs.entities.UserEntity">
@@ -107,38 +115,11 @@
                `term_marketing_at`    AS `termMarketingAt`
         FROM `study_bbs`.`users`
         WHERE BINARY `nickname` = #{nickname}
-
         LIMIT 1
     </select>
 
-    <insert id="insertUser"
-            parameterType="com.yhp.studybbs.entities.UserEntity">
-        INSERT INTO `study_bbs`.`users`(email, password, nickname, name, contact_company_code, contact_first,
-                                        contact_second, contact_third, address_postal, address_primary,
-                                        address_secondary, admin_flag, deleted_flag, suspended_flag, registered_at,
-                                        term_policy_at, term_privacy_at, term_marketing_at)
-        VALUES (#{email},
-                #{password},
-                #{nickname},
-                #{name},
-                #{contactCompanyCode},
-                #{contactFirst},
-                #{contactSecond},
-                #{contactThird},
-                #{addressPostal},
-                #{addressPrimary},
-                #{addressSecondary},
-                #{isAdmin},
-                #{isDeleted},
-                #{isSuspended},
-                #{registeredAt},
-                #{termPolicyAt},
-                #{termPrivacyAt},
-                #{termMarketingAt})
-    </insert>
-
-
-    <update id="updateEmailAuth" parameterType="com.yhp.studybbs.entities.EmailAuthEntity">
+    <update id="updateEmailAuth"
+            parameterType="com.yhp.studybbs.entities.EmailAuthEntity">
         UPDATE `study_bbs`.`email_auths`
         SET `verified_flag` = #{isVerified},
             `created_at`    = #{createdAt},
@@ -148,6 +129,31 @@
           AND BINARY `salt` = #{salt}
         LIMIT 1
     </update>
+
+    <update id="updateUser" parameterType="com.yhp.studybbs.entities.UserEntity">
+        UPDATE `study_bbs`.`users`
+        SET `password` = #{password},
+             `nickname` = #{nickname},
+             `name` = #{name},
+             `contact_company_code` = #{contactCompanyCode},
+             `contact_first` = #{contactFirst},
+             `contact_second` = #{contactSecond},
+             `contact_third` = #{contactThird},
+             `address_postal` = #{addressPostal},
+             `address_primary` = #{addressPrimary},
+             `address_secondary` = #{addressSecondary},
+             `admin_flag` = #{IsAdmin},
+             `deleted_flag` = #{IsDeleted},
+             `suspended_flag` = #{IsSuspended},
+             `registered_at` = #{registeredAt},
+             `term_policy_at` = #{termPolicyAt},
+             `term_privacy_at` = #{termPrivacyAt},
+             `term_marketing_at` = #{termMarketingAt}
+
+        WHERE BINARY `email` = #{email}
+        LIMIT 1
+    </update>
+
 </mapper>
 
 

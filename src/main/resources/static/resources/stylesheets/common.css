@@ -210,7 +210,7 @@ ol, ul {
 #header > .menu > .user > .link > .icon {
     height: 1.125rem;
     filter: brightness(100%);
-    margin-right: 0.15rem;
+    margin-right: 0.25rem;
     transition-duration: 250ms;
     transition-property: filter;
     transition-timing-function: ease;

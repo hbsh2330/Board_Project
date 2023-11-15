@@ -8,22 +8,26 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    int insertEmailAuth(EmailAuthEntity emailAuth); //delet, insert, updat는 전부 int를 반환한다
+    int insertEmailAuth(EmailAuthEntity emailAuth);
 
-    int insertUser(UserEntity entity);
+    int insertUser(UserEntity user);
+
     ContactCompanyEntity[] selectContactCompanies();
 
-    EmailAuthEntity selectEmailAuthByEmailCodeSalt(@Param(value = "email") String email, //@Param의 value의 값인 email이 UserMapper.xml의 #{email} 과 같아야한다.
+    EmailAuthEntity selectEmailAuthByEmailCodeSalt(@Param(value = "email") String email,
                                                    @Param(value = "code") String code,
                                                    @Param(value = "salt") String salt);
 
-    UserEntity selectUserByContact(@Param(value = "contactFirst") String contact,
+    UserEntity selectUserByContact(@Param(value = "contactFirst") String contactFirst,
                                    @Param(value = "contactSecond") String contactSecond,
                                    @Param(value = "contactThird") String contactThird);
 
-    UserEntity selectUserByNickname(@Param(value = "nickname") String nickname);
-
     UserEntity selectUserByEmail(@Param(value = "email") String email);
 
+    UserEntity selectUserByNickname(@Param(value = "nickname") String nickname);
+
     int updateEmailAuth(EmailAuthEntity emailAuth);
+
+    int updateUser(UserEntity user);
+
 }
