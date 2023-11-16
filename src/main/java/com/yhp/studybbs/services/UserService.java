@@ -26,10 +26,11 @@ import java.util.Date;
 @Service
 public class UserService {
 
-    private static void randomize(EmailAuthEntity emailAuth){
+    private static void randomize(EmailAuthEntity emailAuth) {
         UserService.randomize(emailAuth, 5);
     }
-    private static void randomize(EmailAuthEntity emailAuth, int expDuration){
+
+    private static void randomize(EmailAuthEntity emailAuth, int expDuration) {
         emailAuth.setCode(RandomStringUtils.randomNumeric(6));
         emailAuth.setSalt(CryptoUtil.hashSha512(String.format("%s%s%f%f",
                 emailAuth.getEmail(),
@@ -99,16 +100,6 @@ public class UserService {
         user.setEmail(dbUser.getEmail());
         return RecoverEmailResult.SUCCESS;
     }
-//    public ResetPasswordResult resetPassword(UserEntity user) {
-//        if (!UserRegex.PASSWORD.matches(user.getPassword())){
-//            return ResetPasswordResult.FAILURE;
-//        }
-//        UserEntity dbUser = this.userMapper.updatePassword(
-//                user.getEmail());
-//        if (dbUser == null){
-//            return ResetPasswordResult.FAILURE;
-//        }
-//    }
 
     public RegisterResult register(UserEntity user, EmailAuthEntity emailAuth, boolean termMarketingAgreed) {
         if (!UserRegex.EMAIL.matches(user.getEmail()) ||
@@ -167,17 +158,17 @@ public class UserService {
             return SendRegisterEmailResult.FAILURE;
         }
         if (this.userMapper.selectUserByEmail(emailAuth.getEmail()) != null) {
-            return SendRegisterEmailResult.FAILURE_DUPLICATE_EMAIL;
+            return SendRegisterEmailResult.FAILURE_DUPLICATE_EMAIL; // 이미 가입된 이용자
         }
-        UserService.randomize(emailAuth);
+        UserService.randomize(emailAuth); // 인증번호 6자
 
         new MailFactory(this.mailSender, this.templateEngine)
                 .setContextVariable("emailAuth", emailAuth) //MailFactory
                 .setTemplate("user/registerEmail")
                 .setTo(emailAuth.getEmail())
                 .setSubject("[BBS] 회원가입 인증번호")
-                .send();
-        return this.userMapper.insertEmailAuth(emailAuth) > 0
+                .send(); //회원 인증번호 메일로 보내는 Factory형식의 코드
+        return this.userMapper.insertEmailAuth(emailAuth) > 0 //
                 ? SendRegisterEmailResult.SUCCESS
                 : SendRegisterEmailResult.FAILURE;
     }
@@ -203,6 +194,7 @@ public class UserService {
                 ? VerifyRegisterEmailResult.SUCCESS
                 : VerifyRegisterEmailResult.FAILURE;
     }
+
     public SendResetPasswordEmailResult sendResetPasswordEmail(EmailAuthEntity emailAuth) throws MessagingException {
         if (!EmailAuthRegex.EMAIL.matches(emailAuth.getEmail())) {
             return SendResetPasswordEmailResult.FAILURE;
@@ -223,7 +215,30 @@ public class UserService {
                 : SendResetPasswordEmailResult.FAILURE;
     }
 
+    public SendResetPasswordResult sendResetPassword(UserEntity user, EmailAuthEntity emailAuth) {
+        if (!UserRegex.PASSWORD.matches(user.getPassword())||
+                !EmailAuthRegex.EMAIL.matches(emailAuth.getEmail()) ||
+                !EmailAuthRegex.CODE.matches(emailAuth.getCode()) ||
+                !EmailAuthRegex.SALT.matches(emailAuth.getSalt())){
+            return SendResetPasswordResult.FAILURE;
+        }
+        emailAuth = this.userMapper.selectEmailAuthByEmailCodeSalt(
+                emailAuth.getEmail(),
+                emailAuth.getCode(),
+                emailAuth.getSalt());
+        if (emailAuth == null || !emailAuth.isVerified()) {
+            return SendResetPasswordResult.FAILURE;
+        }
+        UserEntity dbUser = this.userMapper.selectUserByEmail(user.getEmail());
+        dbUser.setPassword(CryptoUtil.hashSha512(user.getPassword()));
+        return this.userMapper.updateUser(dbUser) > 0
+                ? SendResetPasswordResult.SUCCESS
+                : SendResetPasswordResult.FAILURE;
+    }
 }
+
+
+
 
 
 

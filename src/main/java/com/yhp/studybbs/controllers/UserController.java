@@ -174,4 +174,15 @@ public class UserController {
         return responseObject.toString();
     }
 
+    @RequestMapping(value = "resetPassword",
+            method = RequestMethod.PATCH,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String patchResetPassword(UserEntity user, EmailAuthEntity emailAuth){
+        SendResetPasswordResult result= this.userService.sendResetPassword(user, emailAuth);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
+    }
+
 }

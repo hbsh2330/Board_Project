@@ -275,24 +275,25 @@ resetPasswordForm.onsubmit = function (e) {
         });
         return;
     }
-    if (resetPasswordForm['password'].value !== resetPasswordForm['passwordCheck']) {
+    if (resetPasswordForm['password'].value !== resetPasswordForm['passwordCheck'].value) {
         dialog.show({
             title: '경고',
             content: '비밀번호가 일치하지 않습니다.',
-            buttons: [
-                dialog.createButton('확인', function () {
-                    resetPasswordForm['passwordCheck'].focus();
-                    resetPasswordForm['passwordCheck'].select();
-                    dialog.hide();
-                })
+            buttons: [dialog.createButton('확인', function () {
+                dialog.hide();
+                resetPasswordForm['passwordCheck'].focus();
+                resetPasswordForm['passwordCheck'].select();
+            })
             ]
         });
         return;
     }
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
+    formData.append('email', resetPasswordForm['email'].value);
+    // formData.append('code', resetPasswordForm['emailCode'].value);
+    // formData.append('salt', resetPasswordForm['emailSalt'].value);
     formData.append('password', resetPasswordForm['password'].value);
-    formData.append('passwordCheck', resetPasswordForm['passwordCheck'].value);
     xhr.onreadystatechange = function () {
         if (xhr.readyState !== XMLHttpRequest.DONE) {
             return;
@@ -311,8 +312,8 @@ resetPasswordForm.onsubmit = function (e) {
                     dialog.show({
                         title: '비밀번호 재설정',
                         content: '비밀번호 재설정이 완료되었습니다.',
-                        buttons: [dialog.createButton('확인', function() {
-                            dialog.hide();
+                        buttons: [dialog.createButton('확인', function () {
+                            location.href = './login';
                         })]
                     });
                     break;
@@ -331,6 +332,8 @@ resetPasswordForm.onsubmit = function (e) {
             });
         }
     }
+    xhr.open('PATCH', './resetPassword');
+    xhr.send(formData);
 }
 
 

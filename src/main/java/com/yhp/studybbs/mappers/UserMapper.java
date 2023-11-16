@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-    int insertEmailAuth(EmailAuthEntity emailAuth);
+    int insertEmailAuth(EmailAuthEntity emailAuth); //insert, Delete, update는 int형식
 
     int insertUser(UserEntity user);
 
