@@ -14,7 +14,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(this.commonInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/resources/**")
-                .excludePathPatterns("/user/resources/**");
+                .excludePathPatterns("/user/resources/**")
+                .excludePathPatterns("/article/resources/**");
     }
     @Bean
     public CommonInterceptor commonInterceptor(){ //빈으로 등록시키면 클래스 이름이 같은 녀석의 객체의 선언부를 초기화시킨다.

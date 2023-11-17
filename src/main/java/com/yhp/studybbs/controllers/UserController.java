@@ -30,7 +30,7 @@ public class UserController {
             produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView getLogin(@SessionAttribute(value = "user", required = false) UserEntity user) {
         ModelAndView modelAndView = new ModelAndView();
-        if (user == null) {
+        if (user == null) { //로그인을 안했다.
             modelAndView.setViewName("user/login");
         } else {
             modelAndView.setViewName("redirect:/");

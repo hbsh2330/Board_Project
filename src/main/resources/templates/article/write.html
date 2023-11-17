@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_board-status" th:content="${board != null}">
+    <meta name="_allowed-status" th:content="${allowed == true}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시글 작성</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/stylesheets/write.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/article/resources/libraries/ckeditor/ckeditor.js}"></script>
+    <script defer th:src="@{/article/resources/scripts/write.js}"></script>
+
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main" th:if="${board !=null && allowed == true}">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title">게시글작성 - <th:block th:text="${board.getText()}"></th:block></h1>
+        </div>
+        <form class="write-form" id="writeForm">
+            <label class="label">
+                <span class="title">제목</span>
+                <input class="common-field"
+                maxlength="100" name="title"
+                placeholder="제목" type="text">
+            </label>
+            <label class="label">
+                <span class="title">내용</span>
+                <textarea class="common-field" maxlength="10000" name="content" placeholder="내용을 입력해주세요" rows="10"></textarea>
+            </label>
+            <div class="label file-wrapper">
+                <span class="text">첨부파일</span>
+                <ul class="files">
+                    ㅋㅋ
+                </ul>
+            </div>
+            <div class="button-container">
+                <a class="common-button" href="#">돌아가기</a>
+                <span class="spring"></span>
+                <input class="common-button" type="submit" value="작성하기">
+            </div>
+        </form>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>
