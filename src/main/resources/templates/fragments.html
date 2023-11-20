@@ -23,14 +23,8 @@
         </li>
         <!--/*@thymesVar id="boards" type="com.yhp.studybbs.entities.BoardEntity[]"*/-->
         <li class="item board" th:each="board : ${boards}">
-            <a class="link" href="#" th:text="${board.getText()}">공지사항</a>
+            <a class="link" href="#" th:text="${board.getText()}"></a>
         </li>
-<!--        <li class="item board">-->
-<!--            <a class="link" href="#">자유게시판</a>-->
-<!--        </li>-->
-<!--        <li class="item board">-->
-<!--            <a class="link" href="#">Q&A</a>-->
-<!--        </li>-->
         <li class="spring"></li>
         <li class="item user" th:if="${session.user == null}">
             <a class="link" th:href="@{/user/login}">

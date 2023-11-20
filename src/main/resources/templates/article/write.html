@@ -22,12 +22,13 @@
         <div class="title-container">
             <h1 class="title">게시글작성 - <th:block th:text="${board.getText()}"></th:block></h1>
         </div>
-        <form class="write-form" id="writeForm">
+        <form class="write-form" id="writeForm" th:with="articleRegex =${T(com.yhp.studybbs.regexes.ArticleRegex)}">
+            <input name="code" type="hidden" th:value="${board.getCode()}">
             <label class="label">
                 <span class="title">제목</span>
                 <input class="common-field"
                 maxlength="100" name="title"
-                placeholder="제목" type="text">
+                placeholder="제목을 입력해주세요." type="text" th:data-regex="${articleRegex.TITLE.expression}">
             </label>
             <label class="label">
                 <span class="title">내용</span>

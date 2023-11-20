@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhp.studybbs.mappers.ArticleMapper">
+    <insert id="insertArticle"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.yhp.studybbs.entities.ArticleEntity">
+        INSERT INTO `study_bbs`.`articles`(`board_code`,
+                                           `user_email`,
+                                           `title`,
+                                           `content`,
+                                           `view`,
+                                           `written_at`,
+                                           `modified_at`,
+                                           `deleted_flag`)
+        values (#{boardCode},
+                #{userEmail},
+                #{title},
+                #{content},
+                #{view},
+                #{writtenAt},
+                #{modifiedAt},
+                #{isDeleted})
+# useGeneratedKeys="true" index가 자동으로 1씩 추가
+# keyColumn="index"DB의 index를 자동으로 1씩 추가"
+# keyProperty="index" 자바의 ArticleEntity의 index필드값과 매핑
+    </insert>
+</mapper>

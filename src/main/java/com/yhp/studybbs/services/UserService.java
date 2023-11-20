@@ -216,10 +216,10 @@ public class UserService {
     }
 
     public SendResetPasswordResult sendResetPassword(UserEntity user, EmailAuthEntity emailAuth) {
-        if (!UserRegex.PASSWORD.matches(user.getPassword())||
+        if (!UserRegex.PASSWORD.matches(user.getPassword()) ||
                 !EmailAuthRegex.EMAIL.matches(emailAuth.getEmail()) ||
                 !EmailAuthRegex.CODE.matches(emailAuth.getCode()) ||
-                !EmailAuthRegex.SALT.matches(emailAuth.getSalt())){
+                !EmailAuthRegex.SALT.matches(emailAuth.getSalt())) {
             return SendResetPasswordResult.FAILURE;
         }
         emailAuth = this.userMapper.selectEmailAuthByEmailCodeSalt(
@@ -235,6 +235,7 @@ public class UserService {
                 ? SendResetPasswordResult.SUCCESS
                 : SendResetPasswordResult.FAILURE;
     }
+
 }
 
 

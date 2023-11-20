@@ -291,8 +291,8 @@ resetPasswordForm.onsubmit = function (e) {
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
     formData.append('email', resetPasswordForm['email'].value);
-    // formData.append('code', resetPasswordForm['emailCode'].value);
-    // formData.append('salt', resetPasswordForm['emailSalt'].value);
+    formData.append('code', resetPasswordForm['emailCode'].value);
+    formData.append('salt', resetPasswordForm['emailSalt'].value);
     formData.append('password', resetPasswordForm['password'].value);
     xhr.onreadystatechange = function () {
         if (xhr.readyState !== XMLHttpRequest.DONE) {

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yhp.studybbs.mappers.BoardMapper">
+    <select id="selectBoardByCode" resultType="com.yhp.studybbs.entities.BoardEntity">
+        SELECT `code`               AS `code`,
+               `text`               AS `text`,
+               `order`              AS `order`,
+               `admin_write_flag`   AS `isAdminWrite`
+        FROM `study_bbs`.`boards`
+        WHERE BINARY `code` = #{code}
+        LIMIT 1
+    </select>
+
     <select id="selectBoards" resultType="com.yhp.studybbs.entities.BoardEntity">
         SELECT `code`               AS `code`,
                `text`               AS `text`,
@@ -9,4 +19,5 @@
         FROM `study_bbs`.`boards`
         ORDER BY `order`
     </select>
+
 </mapper>
