@@ -26,4 +26,25 @@
 # keyColumn="index"DB의 index를 자동으로 1씩 추가"
 # keyProperty="index" 자바의 ArticleEntity의 index필드값과 매핑
     </insert>
+    <insert id="insertImage"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.yhp.studybbs.entities.ImageEntity">
+        INSERT INTO `study_bbs`.`images` (`name`, `type`, `size`, `data`, `user_email`, `created_at`)
+        VALUES (#{name}, #{type}, #{size}, #{data}, #{userEmail}, #{createdAt})
+    </insert>
+
+    <select id="selectImageByIndex" resultType="com.yhp.studybbs.entities.ImageEntity">
+        SELECT `index`      AS `index`,
+               `name`       AS `name`,
+               `type`       AS `type`,
+               `size`       AS `size`,
+               `data`       AS `data`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`images`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
 </mapper>

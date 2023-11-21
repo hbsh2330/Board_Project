@@ -35,10 +35,22 @@
                 <textarea class="common-field" maxlength="10000" name="content" placeholder="내용을 입력해주세요" rows="10"></textarea>
             </label>
             <div class="label file-wrapper">
+                <input hidden name="file" type="file">
                 <span class="text">첨부파일</span>
-                <ul class="files">
-                    ㅋㅋ
-                </ul>
+                <div class="files">
+                    <ul class="list" rel="fileList">
+                        <li class="item">
+                            <span class="progress" rel="progress"></span>
+                            <span class="text-container">
+                                <span class="name">파일 샘플 1</span>
+                                <span class="size">107.18KB</span>
+                            </span>
+                            <a class="common-button" rel="delete">삭제</a>
+                        </li>
+                    </ul>
+                    <button class="common-button" name="fileAdd" title="첨부파일 추가">
+                        <img alt="+" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAASElEQVR4nGNgGAVDCqhvSV4OwjSzQGNL8jcQHrUAJ9AYDSIQACVDWFBgwf+hGKs8UUmY5hbgAxqjkUwIaIwG0YAX16OAgRYAAFD9ghGwLNbcAAAAAElFTkSuQmCC"></button>
+                </div>
             </div>
             <div class="button-container">
                 <a class="common-button" href="#">돌아가기</a>

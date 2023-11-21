@@ -56,8 +56,38 @@
     background-color: #ffffff;
     border: 0.0625rem solid #d5d8dcc0;
     border-radius: 0.375rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.75rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
 }
+
+#writeForm > .file-wrapper > .files > .list {
+    flex: 1 1 0;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .text-container {
+    align-items: flex-start;
+    display: flex;
+    gap: 0.375rem;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#writeForm > .file-wrapper > .files > .list > .item > .text-container > .size {
+    color: #808b96;
+    font-size: 0.9rem;
+}
+
 
 #writeForm > .button-container {
     align-items: stretch;

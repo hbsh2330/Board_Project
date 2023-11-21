@@ -62,19 +62,19 @@ public class UserService {
         return UserService.contactCompanies;
     }
 
-    public LoginResult login(HttpSession session, UserEntity user) {
+    public LoginResult login(HttpSession session, UserEntity user) { //세션
         if (!UserRegex.EMAIL.matches(user.getEmail()) || !UserRegex.PASSWORD.matches(user.getPassword())) {
             return LoginResult.FAILURE;
         }
         UserEntity dbUser = this.userMapper.selectUserByEmail(user.getEmail());
         if (dbUser == null) {
-            return LoginResult.FAILURE;
+            return LoginResult.FAILURE; //로그인이 안됬음
         }
         if (!dbUser.getPassword().equals(CryptoUtil.hashSha512(user.getPassword()))) {
-            return LoginResult.FAILURE;
+            return LoginResult.FAILURE; //비밀번호가 틀렸을 경우
         }
         if (dbUser.isSuspended()) {
-            return LoginResult.FAILURE_SUSPENDED;
+            return LoginResult.FAILURE_SUSPENDED; //탈퇴한 회원일 경우
         }
         session.setAttribute("user", dbUser);
         return LoginResult.SUCCESS;

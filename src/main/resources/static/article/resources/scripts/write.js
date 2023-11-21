@@ -27,13 +27,47 @@ if (document.head.querySelector(':scope > meta[name="_board-status"]').getAttrib
 const writeForm = document.getElementById('writeForm');
 
 if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면
-    ClassicEditor.create(writeForm['content'], {})
+    ClassicEditor.create(writeForm['content'], {
+        simpleUpload: {
+            uploadUrl: './image'
+        }   //이미지를 넣기위한 설정
+    })
         .then(function (editor) {
             writeForm.editor = editor;
         })
         .catch(function (error) {
             console.log(error);
         });
+
+    writeForm['fileAdd'].onclick = function (e){
+        e.preventDefault();
+
+        writeForm['file'].click();
+    }
+    writeForm['file'].onchange = function (){
+        const file = writeForm['file'].files[0];
+        if (!file){ //file이 undefind일때
+            return;
+        }
+        const fileList = writeForm.querySelector('[rel="fileList"]');
+        const item = new DOMParser().parseFromString(`
+                         <li class="item" rel="item">
+                            <span class="progress" rel="progress"></span>
+                            <span class="text-container">
+                                <span class="name">${file['name']}</span>
+                                <span class="size">${file['size']}</span>
+                            </span>
+                            <a class="common-button" rel="delete">삭제</a>
+                        </li>`, 'text/html').querySelector('[rel="item"]');
+                    const progress = item.querySelector('[rel="progress"]');
+                    const deleteEl = item.querySelector('[rel="delete"]');
+                    deleteEl.onclick = function (){
+                        item.remove();
+                    }
+                    fileList.append(item);
+
+    }
+
 
     writeForm.onsubmit = function (e) {
         e.preventDefault();

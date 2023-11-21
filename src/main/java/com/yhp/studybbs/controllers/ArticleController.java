@@ -1,17 +1,23 @@
 package com.yhp.studybbs.controllers;
 
-import com.yhp.studybbs.entities.ArticleEntity;
-import com.yhp.studybbs.entities.BoardEntity;
-import com.yhp.studybbs.entities.UserEntity;
+import com.yhp.studybbs.entities.*;
+import com.yhp.studybbs.results.article.UploadFileResult;
+import com.yhp.studybbs.results.article.UploadImageResult;
 import com.yhp.studybbs.results.article.WriteResult;
 import com.yhp.studybbs.services.ArticleService;
 import com.yhp.studybbs.services.BoardService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping(value = "article")
@@ -57,4 +63,58 @@ public class ArticleController {
         }
         return resultObject.toString();
     }
+    @RequestMapping(value = "image", //이미지를 올리기위한 컨트롤러
+    method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postImage(@SessionAttribute(value = "user")UserEntity user,
+                            @RequestParam(value = "upload")MultipartFile file) throws IOException {
+        ImageEntity image = new ImageEntity(file);
+        UploadImageResult result = this.articleService.uploadImage(image, user);
+        JSONObject responseObject = new JSONObject();
+        if (result == UploadImageResult.SUCCESS){
+            responseObject.put("url", "/article/image?index=" + image.getIndex());
+        } else {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("message", "알 수 없는 이유로 이미지를 업로드 하지 못하였습니다.");
+            responseObject.put("error", messageObject);
+        }
+        return responseObject.toString();
+    }
+
+    @RequestMapping(value = "image", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getImage(@RequestParam(value = "index") int index){
+        ResponseEntity<byte[]> response;
+        ImageEntity image = this.articleService.getImage(index);
+        if(image == null){
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            // body, header, status
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.parseMediaType(image.getType()));
+            httpHeaders.setContentLength(image.getSize());
+            response = new ResponseEntity<>(image.getData(), httpHeaders, HttpStatus.OK);
+        }
+        return response;
+    }
+
+    @RequestMapping(value = "file", //이미지를 올리기위한 컨트롤러
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postFile(@SessionAttribute(value = "user")UserEntity user,
+                            @RequestParam(value = "file")MultipartFile multipartFile) throws IOException {
+        FileEntity file = new FileEntity(multipartFile);
+        UploadFileResult result = this.articleService.uploadFile(file, user);
+        JSONObject responseObject = new JSONObject();
+        if (result == UploadFileResult.SUCCESS){
+            responseObject.put("url", "/article/file?index=" + file.getIndex());
+        } else {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("message", "알 수 없는 이유로 파일을 업로드 하지 못하였습니다.");
+            responseObject.put("error", messageObject);
+        }
+        return responseObject.toString();
+    }
+
 }

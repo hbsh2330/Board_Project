@@ -1,13 +1,12 @@
 package com.yhp.studybbs.services;
 
-import com.yhp.studybbs.entities.ArticleEntity;
-import com.yhp.studybbs.entities.BoardEntity;
-import com.yhp.studybbs.entities.UserEntity;
+import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.mappers.ArticleMapper;
 import com.yhp.studybbs.mappers.BoardMapper;
 import com.yhp.studybbs.regexes.ArticleRegex;
+import com.yhp.studybbs.results.article.UploadFileResult;
+import com.yhp.studybbs.results.article.UploadImageResult;
 import com.yhp.studybbs.results.article.WriteResult;
-import com.yhp.studybbs.results.user.RegisterResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +43,25 @@ public class ArticleService {
             return this.articleMapper.insertArticle(article) > 0
                     ? WriteResult.SUCCESS
                     : WriteResult.FAILURE;
+    }
+
+    public UploadImageResult uploadImage(ImageEntity image, UserEntity user){
+        image.setUserEmail(user.getEmail())
+                .setCreatedAt(new Date());
+        return this.articleMapper.insertImage(image) > 0
+                ? UploadImageResult.SUCCESS
+                : UploadImageResult.FAILURE;
+    }
+
+    public UploadFileResult uploadFile(FileEntity file, UserEntity user){
+        file.setUserEmail(user.getEmail())
+                .setCreatedAt(new Date());
+        return this.articleMapper.insertFile(file) > 0
+                ? UploadFileResult.SUCCESS
+                : UploadFileResult.FAILURE;
+    }
+
+    public ImageEntity getImage(int index){
+        return this.articleMapper.selectImageByIndex(index);
     }
 }
