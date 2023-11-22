@@ -47,4 +47,74 @@
         WHERE `index` = #{index}
         LIMIT 1
     </select>
+
+    <insert id="insertFile"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.yhp.studybbs.entities.FileEntity">
+        INSERT INTO `study_bbs`.`files` (`name`, `type`, `size`, `data`, `article_index`, `user_email`, `created_at`)
+        VALUES (#{name}, #{type}, #{size}, #{data}, #{articleIndex}, #{userEmail}, #{createdAt})
+    </insert>
+
+    <select id="selectFileByIndexNoData"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index` AS `index`,
+               `name` AS `name`,
+               `type` AS `type`,
+               `size` AS `size`,
+               `data` AS `data`,
+               `article_index` AS `articleIndex`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <update id="updateFileNoData"
+            parameterType="com.yhp.studybbs.entities.FileEntity">
+        UPDATE `study_bbs`.`files`
+        SET `name` = #{name},
+            `type` = #{type},
+            `size` = #{size},
+            `data` = #{data},
+            `article_index` = #{articleIndex},
+            `user_email` = #{userEmail},
+            `created_at` = #{createdAt}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <select id="selectArticleByIndex"
+            resultType="com.yhp.studybbs.entities.ArticleEntity">
+        SELECT `index`        AS `index`,
+               `board_code`   AS `boardCode`,
+               `user_email`   AS `userEmail`,
+               `title`        AS `title`,
+               `content`      AS `content`,
+               `view`         AS `view`,
+               `written_at`   AS `writtenAt`,
+               `modified_at`  AS `modifiedAt`,
+               `deleted_flag` AS `isDeleted`
+        FROM `study_bbs`.`articles`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectFilesByArticleIndexNoData"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index` AS `index`,
+               `name` AS `name`,
+               `type` AS `type`,
+               `size` AS `size`,
+               `data` AS `data`,
+               `article_index` AS `articleIndex`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{articleIndex}
+        LIMIT 1
+    </select>
+
 </mapper>

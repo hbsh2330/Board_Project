@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_article-status" th:content="${article != null && !article.isDeleted()}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시글 읽기</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/stylesheets/read.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/article/resources/scripts/read.js}"></script>
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main" th:if="${article != null && !article.isDeleted()}">
+    <div class="content-container">
+        <div class="title-container">
+            <h1 class="title" th:text="${article.getTitle()}"></h1>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>작성자</th>
+                <td th:text="${article.getUserEmail()}"></td>
+                <th>조회수</th>
+                <td th:text="${article.getView()}"></td>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

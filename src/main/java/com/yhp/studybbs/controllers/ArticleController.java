@@ -54,11 +54,16 @@ public class ArticleController {
 
     @RequestMapping(value = "write", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postWrite(@SessionAttribute(value = "user") UserEntity user, ArticleEntity article){
-        WriteResult result = this.articleService.writeResult(article, user);
+    public String postWrite(@SessionAttribute(value = "user") UserEntity user,
+                            @RequestParam(value = "fileIndexes", required = false) int[] fileIndexes,
+                            ArticleEntity article) {
+        if (fileIndexes == null){
+            fileIndexes = new int[0];
+        }
+        WriteResult result = this.articleService.write(article, fileIndexes, user);
         JSONObject resultObject = new JSONObject();
         resultObject.put("result", result.name().toLowerCase());
-        if (result == WriteResult.SUCCESS){
+        if (result == WriteResult.SUCCESS) {
             resultObject.put("index", article.getIndex());
         }
         return resultObject.toString();
@@ -107,14 +112,26 @@ public class ArticleController {
         FileEntity file = new FileEntity(multipartFile);
         UploadFileResult result = this.articleService.uploadFile(file, user);
         JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
         if (result == UploadFileResult.SUCCESS){
-            responseObject.put("url", "/article/file?index=" + file.getIndex());
-        } else {
-            JSONObject messageObject = new JSONObject();
-            messageObject.put("message", "알 수 없는 이유로 파일을 업로드 하지 못하였습니다.");
-            responseObject.put("error", messageObject);
+            responseObject.put("index", file.getIndex());
         }
         return responseObject.toString();
+    }
+
+    @RequestMapping(value = "read",
+            method = RequestMethod.GET,
+            produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView getRead(@RequestParam(value = "index")int index){
+        ModelAndView modelAndView = new ModelAndView();
+        ArticleEntity article = this.articleService.getArticle(index);
+        if (article != null && !article.isDeleted()){
+            FileEntity[] files = this.articleService.getFilesOf(article);
+            modelAndView.addObject("files", files);
+        }
+        modelAndView.addObject("article", article);
+        modelAndView.setViewName("article/read");
+        return modelAndView;
     }
 
 }

@@ -54,23 +54,69 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면
                          <li class="item" rel="item">
                             <span class="progress" rel="progress"></span>
                             <span class="text-container">
-                                <span class="name">${file['name']}</span>
-                                <span class="size">${file['size']}</span>
+                                <span class="name" title="${file['name']}">${file['name']}</span>
+                                <span class="size">${(Math.floor(file['size'] / 1024 * 100) / 100).toLocaleString()}KB</span>  <!--byte를 kb로 바꾸는 거 toLocaleString 콤마찍기 -->
                             </span>
                             <a class="common-button" rel="delete">삭제</a>
                         </li>`, 'text/html').querySelector('[rel="item"]');
-                    const progress = item.querySelector('[rel="progress"]');
+                    const progressEl = item.querySelector('[rel="progress"]');
                     const deleteEl = item.querySelector('[rel="delete"]');
+                    const xhr = new XMLHttpRequest();
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    xhr.onreadystatechange = function(){
+                        if(xhr.readyState !== XMLHttpRequest.DONE){
+                            return;
+                        }
+                        if(xhr.status < 200 || xhr.status >= 300){
+                            item.classList.add('error');
+                            progressEl.style.width = '100%'
+                            return;
+                        }
+                        const responseObject = JSON.parse(xhr.responseText);
+                        switch (responseObject['result']){
+                            case 'success':
+                                item.dataset.index = responseObject['index'];
+                                item.classList.add('complete');
+                                progressEl.style.width = '100%'
+                                break;
+                            default:
+                                item.classList.add('error');
+                                progressEl.style.width = '100%'
+                        }
+
+                    }
+                    xhr.upload.onprogress = function (e){
+                        if (e.lengthComputable){
+                            progressEl.style.width = `${Math.floor(e.loaded / e.total * 100)}%`;
+
+                        }
+                    }
+                    xhr.open('POST', './file');
+                    xhr.send(formData);
                     deleteEl.onclick = function (){
                         item.remove();
                     }
                     fileList.append(item);
+                    fileList.scrollLeft = fileList.scrollWidth;
+                    writeForm['file'].value = '';
 
     }
 
 
     writeForm.onsubmit = function (e) {
         e.preventDefault();
+
+        const fileList = writeForm.querySelector('[rel="fileList"]');
+        const fileItems = Array.from(fileList.querySelectorAll(':scope > [rel="item"]'));
+        if (fileItems.some(fileItem => !fileItem.classList.contains('complete'))){
+            dialog.show({
+                title: '경고',
+                content: '업로드에 실패하였거나, 아직 업로드가 진행중인 파일이 있습니다. 실패한 항목을 삭제하거나, 업로드가 완료된 후 다시 시도해 주세요',
+                buttons: [dialog.createButton('확인', dialog.hide)]
+            });
+            return false;
+        }
 
         if (writeForm['title'].value === '') {
             dialog.show({
@@ -97,6 +143,9 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면
         }
         const xhr = new XMLHttpRequest();
         const formData = new FormData();
+        for (const fileItem of fileItems) {
+            formData.append('fileIndexes', fileItem.dataset.index)
+        }
         formData.append('boardCode', writeForm['code'].value); //boardCode로 해야지 ArticleEntity가 boradCode로 맴버변수로 받기 때문에 writeForm['code']는 html의 name=code
         formData.append('title', writeForm['title'].value);
         formData.append('content', writeForm.editor.getData());

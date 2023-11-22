@@ -16,4 +16,13 @@ public interface ArticleMapper {
     ImageEntity selectImageByIndex(@Param(value = "index") int index);
 
     int insertFile(FileEntity file);
+
+    FileEntity selectFileByIndexNoData(@Param(value = "index") int index); //데이터를 제외하고 샐렉트한다,.
+
+    int updateFileNoData(FileEntity file);
+
+    ArticleEntity selectArticleByIndex(@Param(value = "index") int index);
+
+    FileEntity[] selectFilesByArticleIndexNoData(@Param(value = "articleIndex") int articleIndex);
+
 }

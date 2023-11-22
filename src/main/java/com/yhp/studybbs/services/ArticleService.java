@@ -23,7 +23,7 @@ public class ArticleService {
         this.boardMapper = boardMapper;
     }
 
-    public WriteResult writeResult(ArticleEntity article, UserEntity user) {
+    public WriteResult write(ArticleEntity article, int[] fileIndexes, UserEntity user) {
         if (!ArticleRegex.TITLE.matches(article.getTitle())) {
             return WriteResult.FAILURE;
         }
@@ -36,13 +36,19 @@ public class ArticleService {
                 .setWrittenAt(new Date())
                 .setModifiedAt(null)
                 .setDeleted(false);
-
-        if (!board.isAdminWrite() && user.isAdmin()) { //만약 관리자 계정이 아니고, user.isAdmin이 false가 아니라면
+        int articleInsertResult = this.articleMapper.insertArticle(article);
+        if (articleInsertResult == 0){
             return WriteResult.FAILURE;
         }
-            return this.articleMapper.insertArticle(article) > 0
-                    ? WriteResult.SUCCESS
-                    : WriteResult.FAILURE;
+        for (int fileIndex : fileIndexes){
+            FileEntity file = this.articleMapper.selectFileByIndexNoData(fileIndex);
+            if (file == null){
+                continue;
+            }
+            file.setArticleIndex(article.getIndex());
+            this.articleMapper.updateFileNoData(file);
+        }
+        return WriteResult.SUCCESS;
     }
 
     public UploadImageResult uploadImage(ImageEntity image, UserEntity user){
@@ -63,5 +69,13 @@ public class ArticleService {
 
     public ImageEntity getImage(int index){
         return this.articleMapper.selectImageByIndex(index);
+    }
+
+    public ArticleEntity getArticle(int index){
+        return this.articleMapper.selectArticleByIndex(index);
+    }
+
+    public FileEntity[] getFilesOf(ArticleEntity article){
+        return this.articleMapper.selectFilesByArticleIndexNoData(article.getIndex());
     }
 }
