@@ -63,7 +63,6 @@
                `name` AS `name`,
                `type` AS `type`,
                `size` AS `size`,
-               `data` AS `data`,
                `article_index` AS `articleIndex`,
                `user_email` AS `userEmail`,
                `created_at` AS `createdAt`
@@ -108,13 +107,59 @@
                `name` AS `name`,
                `type` AS `type`,
                `size` AS `size`,
+               `article_index` AS `articleIndex`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `article_index` = #{articleIndex}
+        LIMIT 1
+    </select>
+
+    <select id="selectFileByIndex"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index` AS `index`,
+               `name` AS `name`,
+               `type` AS `type`,
+               `size` AS `size`,
                `data` AS `data`,
                `article_index` AS `articleIndex`,
                `user_email` AS `userEmail`,
                `created_at` AS `createdAt`
         FROM `study_bbs`.`files`
-        WHERE `index` = #{articleIndex}
+        WHERE `index` = #{index}
         LIMIT 1
     </select>
 
+    <select id="selectArticleDtoByIndex"
+            resultType="com.yhp.studybbs.dtos.ArticleDto">
+        SELECT `article`.`index`        AS `index`,
+               `article`.`board_code`   AS `boardCode`,
+               `article`.`user_email`   AS `userEmail`,
+               `article`.`title`        AS `title`,
+               `article`.`content`      AS `content`,
+               `article`.`view`         AS `view`,
+               `article`.`written_at`   AS `writtenAt`,
+               `article`.`modified_at`  AS `modifiedAt`,
+               `article`.`deleted_flag` AS `isDeleted`,
+               `user`.`nickname`        AS `userNickname`
+        FROM `study_bbs`.`articles` AS `article`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `article`.`user_email` = `user`.`email`
+        WHERE `article`.`index` = #{index}
+        LIMIT 1
+    </select>
+
+    <update id="updateArticle"
+            parameterType="com.yhp.studybbs.entities.ArticleEntity">
+        UPDATE `study_bbs`.`articles`
+        SET `board_code`   = #{boardCode},
+            `user_email`   = #{userEmail},
+            `title`        = #{title},
+            `content`      = #{content},
+            `view`         = #{view},
+            `written_at`   = #{writtenAt},
+            `modified_at`  = #{modifiedAt},
+            `deleted_flag` = #{isDeleted}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
 </mapper>

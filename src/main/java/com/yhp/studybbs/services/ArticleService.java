@@ -1,5 +1,6 @@
 package com.yhp.studybbs.services;
 
+import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.mappers.ArticleMapper;
 import com.yhp.studybbs.mappers.BoardMapper;
@@ -77,5 +78,18 @@ public class ArticleService {
 
     public FileEntity[] getFilesOf(ArticleEntity article){
         return this.articleMapper.selectFilesByArticleIndexNoData(article.getIndex());
+    }
+
+    public FileEntity getFile(int index){
+        return this.articleMapper.selectFileByIndex(index);
+    }
+
+    public ArticleDto getArticleDto(int index){
+        ArticleDto article = this.articleMapper.selectArticleDtoByIndex(index);
+        if (article != null){
+            article.setView(article.getView() + 1);
+            this.articleMapper.updateArticle(article);
+        }
+        return article;
     }
 }

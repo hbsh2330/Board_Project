@@ -1,5 +1,6 @@
 package com.yhp.studybbs.mappers;
 
+import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.entities.ArticleEntity;
 import com.yhp.studybbs.entities.FileEntity;
 import com.yhp.studybbs.entities.ImageEntity;
@@ -15,6 +16,8 @@ public interface ArticleMapper {
 
     ImageEntity selectImageByIndex(@Param(value = "index") int index);
 
+    ArticleDto selectArticleDtoByIndex(@Param(value = "index") int index);
+
     int insertFile(FileEntity file);
 
     FileEntity selectFileByIndexNoData(@Param(value = "index") int index); //데이터를 제외하고 샐렉트한다,.
@@ -25,4 +28,7 @@ public interface ArticleMapper {
 
     FileEntity[] selectFilesByArticleIndexNoData(@Param(value = "articleIndex") int articleIndex);
 
+    FileEntity selectFileByIndex(@Param(value = "index") int index);
+
+    int updateArticle(ArticleEntity article);
 }

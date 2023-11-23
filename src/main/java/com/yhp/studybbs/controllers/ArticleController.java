@@ -1,5 +1,6 @@
 package com.yhp.studybbs.controllers;
 
+import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.results.article.UploadFileResult;
 import com.yhp.studybbs.results.article.UploadImageResult;
@@ -8,16 +9,14 @@ import com.yhp.studybbs.services.ArticleService;
 import com.yhp.studybbs.services.BoardService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequestMapping(value = "article")
@@ -103,7 +102,7 @@ public class ArticleController {
         return response;
     }
 
-    @RequestMapping(value = "file", //이미지를 올리기위한 컨트롤러
+    @RequestMapping(value = "file", //파일을 올리기위한 컨트롤러
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -122,16 +121,46 @@ public class ArticleController {
     @RequestMapping(value = "read",
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView getRead(@RequestParam(value = "index")int index){
+    public ModelAndView getRead(@RequestAttribute(value = "boards") BoardEntity[] boards,
+                                @RequestParam(value = "index")int index,
+                                @RequestParam(value = "page") int page){
         ModelAndView modelAndView = new ModelAndView();
-        ArticleEntity article = this.articleService.getArticle(index);
+        ArticleDto article = this.articleService.getArticleDto(index);
         if (article != null && !article.isDeleted()){
+            BoardEntity board = null; //
+            for (BoardEntity b: boards){
+                if (b.getCode().equals(article.getBoardCode())){
+                    board = b; //board에 borad배열의 값을 집어 넣는다.
+                    break;
+                }
+            }
             FileEntity[] files = this.articleService.getFilesOf(article);
             modelAndView.addObject("files", files);
+            modelAndView.addObject("board", board);
+            modelAndView.addObject("page", page);
         }
         modelAndView.addObject("article", article);
         modelAndView.setViewName("article/read");
         return modelAndView;
     }
 
+    @RequestMapping(value = "file", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getFile(@RequestParam(value = "index") int index){
+        ResponseEntity<byte[]> response;
+        FileEntity file = this.articleService.getFile(index);
+        if (file == null){
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            ContentDisposition contentDisposition = ContentDisposition
+                    .attachment() //다운로드가 되고 inline은 표시가 됨 //첨부파일이니 다운로드 해야하니까
+                    .filename(file.getName(), StandardCharsets.UTF_8)
+                    .build();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentLength(file.getSize());
+            headers.setContentType(MediaType.parseMediaType(file.getType()));
+            headers.setContentDisposition(contentDisposition);
+            response = new ResponseEntity<>(file.getData(), headers, HttpStatus.OK);
+        }
+        return response;
+    }
 }

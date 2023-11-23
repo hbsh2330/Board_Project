@@ -28,6 +28,7 @@ const writeForm = document.getElementById('writeForm');
 
 if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면
     ClassicEditor.create(writeForm['content'], {
+        removePlugins: ['Markdown'],  //이미지 넣기 위해서 markdown을 제거
         simpleUpload: {
             uploadUrl: './image'
         }   //이미지를 넣기위한 설정

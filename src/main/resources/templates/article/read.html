@@ -8,6 +8,7 @@
     <title>게시글 읽기</title>
     <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
     <link rel="stylesheet" th:href="@{/article/resources/stylesheets/read.css}">
+    <link rel="stylesheet" th:href="@{/article/resources/libraries/ckeditor/ckeditor.css}">
     <script defer th:src="@{/resources/scripts/common.js}"></script>
     <script defer th:src="@{/article/resources/scripts/read.js}"></script>
 </head>
@@ -19,15 +20,48 @@
         <div class="title-container">
             <h1 class="title" th:text="${article.getTitle()}"></h1>
         </div>
-        <table class="table">
+        <table class="table" id="articleTable">
             <thead>
             <tr>
+                <th>제목</th>
+                <td class="full" colspan="3" th:text="${article.getTitle()}"></td>
+            </tr>
+            <tr>
                 <th>작성자</th>
-                <td th:text="${article.getUserEmail()}"></td>
+                <td class="half" th:text="${article.getUserNickname()}"></td>
                 <th>조회수</th>
-                <td th:text="${article.getView()}"></td>
+                <td class="half" th:text="${article.getView()}"></td>
+            </tr>
+            <tr>
+                <th>작성일시</th>
+                <td class="half" th:text="${#dates.format(article.getWrittenAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <th th:if="${article.getModifiedAt() != null}">수정 일시</th>
+                <td class="half" th:if="${article.getModifiedAt() != null}" th:text="${#dates.format(article.getModifiedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
             </tr>
             </thead>
+            <tbody>
+            <tr>
+                <td class="content ck-content" colspan="4" th:utext="${article.getContent()}"></td>
+<!-- -->
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+                <th>첨부파일</th>
+                <td class="file-empty" colspan="3" th:if="${files == null || files.length == 0}">첨부 파일이 없습니다.</td>
+                <td class="file-wrapper" colspan="3" th:if="${files != null && files.length > 0}">
+                    <ul class="list">
+                        <li class="item" th:each="file : ${files}">
+                            <a class="link" target="_blank" th:href="@{/article/file (index=${file.getIndex()})}">
+                                <img alt="" class="icon" th:src="@{/resources/images/read.file.icon.png}">
+                                <span class="name" th:text="${file.getName()}"></span>
+                            </a>
+                            <span class="size">(<th:block th:text="${T(java.lang.Math).floor(file.getSize() / 1024.0 * 100) / 100}"></th:block>KB)</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
         </table>
     </div>
 </main>
