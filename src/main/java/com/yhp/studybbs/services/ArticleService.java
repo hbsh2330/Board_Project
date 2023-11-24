@@ -5,8 +5,10 @@ import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.mappers.ArticleMapper;
 import com.yhp.studybbs.mappers.BoardMapper;
 import com.yhp.studybbs.regexes.ArticleRegex;
+import com.yhp.studybbs.regexes.CommentRegex;
 import com.yhp.studybbs.results.article.UploadFileResult;
 import com.yhp.studybbs.results.article.UploadImageResult;
+import com.yhp.studybbs.results.article.WriteCommentResult;
 import com.yhp.studybbs.results.article.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +91,20 @@ public class ArticleService {
         if (article != null){
             article.setView(article.getView() + 1);
             this.articleMapper.updateArticle(article);
+
         }
         return article;
+    }
+    public WriteCommentResult writeComment(CommentEntity comment, UserEntity user){
+        if (!CommentRegex.CONTENT.matches(comment.getContent())){
+            return WriteCommentResult.FAILURE;
+        }
+        comment.setUserEmail(user.getEmail())
+                .setWrittenAt(new Date())
+                .setModifiedAt(null)
+                .setDeleted(false);
+        return this.articleMapper.insertComment(comment) > 0
+                ? WriteCommentResult.SUCCESS
+                : WriteCommentResult.FAILURE;
     }
 }

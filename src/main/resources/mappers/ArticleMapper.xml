@@ -77,7 +77,6 @@
         SET `name` = #{name},
             `type` = #{type},
             `size` = #{size},
-            `data` = #{data},
             `article_index` = #{articleIndex},
             `user_email` = #{userEmail},
             `created_at` = #{createdAt}
@@ -112,7 +111,6 @@
                `created_at` AS `createdAt`
         FROM `study_bbs`.`files`
         WHERE `article_index` = #{articleIndex}
-        LIMIT 1
     </select>
 
     <select id="selectFileByIndex"
@@ -162,4 +160,20 @@
         WHERE `index` = #{index}
         LIMIT 1
     </update>
+
+    <insert id="insertComment"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.yhp.studybbs.entities.CommentEntity">
+        INSERT INTO `study_bbs`.`comments`(`article_index`, `user_email`, `comment_index`, `content`, `written_at`, `modified_at`, `deleted_flag`)
+        VALUES (
+                   #{articleIndex},
+                   #{userEmail},
+                   #{commentIndex},
+                   #{content},
+                   #{writtenAt},
+                   #{modifiedAt},
+                   #{isDeleted})
+    </insert>
 </mapper>

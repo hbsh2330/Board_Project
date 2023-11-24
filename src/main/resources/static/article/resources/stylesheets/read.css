@@ -91,3 +91,144 @@
     background-color: transparent;
     padding: 0;
 }
+#articleTable > tfoot > tr > td {
+    background-color: unset;
+    padding: 0.375rem 0 0 0;
+}
+
+#articleTable .button-container {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#articleTable .bottom-button-container > .spring {
+    flex: 1;
+}
+
+#articleTable tr > *:first-child {
+    border-spacing: 0;
+}
+#articleTable {
+    border-collapse: separate;
+    border-spacing: 0.375rem;
+    margin: -0.375rem;
+}
+
+#articleTable .bottom-button-container > * {
+    color: inherit;
+    text-decoration: unset;
+}
+
+#commentForm {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#commentForm > .label {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#commentForm > .label > .text {
+    background-color: #566573;
+    font-size: 1.125rem;
+    border-radius: 0.375rem;
+
+}
+
+#commentForm > .label > .horizontal{
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#commentForm > .label > .horizontal > .big {
+    flex: 1;
+}
+
+#commentForm > .label > .text {
+    background-color: #566573;
+    border-radius: 0.375rem;
+    color: #ffffff;
+    padding: 0.5rem 0.75rem;
+}
+
+#commentTable .comment > .head {
+    background-color: #808b96;
+    color: #ffffff;
+    font-size: 0.9rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#commentTable .comment > .head > .nickname {
+    font-weight: 400;
+}
+
+#commentTable .comment > .head > .written-at {
+    color: #d5d8dc;
+}
+
+#commentTable .comment > .body {
+    background-color: #ffffff;
+    border-bottom: 0.0625rem solid #eaecee;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+}
+
+#commentTable .comment > .foot {
+    background-color: #ffffff;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#commentTable > thead {
+    background-color: #ffffff;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+#commentTable > thead > tr > td {
+    background-color: #ffffff;
+    border-radius: 0.375rem;
+    color: #808b96;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+#commentTable .comment > .foot > .vote {
+    cursor: pointer;
+
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    justify-content: flex-start;
+}
+
+
+

@@ -4,6 +4,7 @@ import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.results.article.UploadFileResult;
 import com.yhp.studybbs.results.article.UploadImageResult;
+import com.yhp.studybbs.results.article.WriteCommentResult;
 import com.yhp.studybbs.results.article.WriteResult;
 import com.yhp.studybbs.services.ArticleService;
 import com.yhp.studybbs.services.BoardService;
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class ArticleController {
     private final BoardService boardService;
     private final ArticleService articleService;
+
     @Autowired
     public ArticleController(BoardService boardService, ArticleService articleService) {
         this.boardService = boardService;
@@ -30,15 +32,15 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "write", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView getWrite(@SessionAttribute(value = "user", required = false)UserEntity user, @RequestAttribute(value = "boards"
-    ) BoardEntity[] boards, @RequestParam(value = "code", required = false, defaultValue = "")String code){
+    public ModelAndView getWrite(@SessionAttribute(value = "user", required = false) UserEntity user, @RequestAttribute(value = "boards"
+    ) BoardEntity[] boards, @RequestParam(value = "code", required = false, defaultValue = "") String code) {
         ModelAndView modelAndView = new ModelAndView();
         if (user == null) { //로그인을 하지않으면
             modelAndView.setViewName("redirect:/user/login"); //로그인 페이지로 리다이렉트
         } else {
             BoardEntity board = null; //
-            for (BoardEntity b: boards){
-                if (b.getCode().equals(code)){ //board에 있는 code값과 requestParam으로 받아온 code값이 같을경우
+            for (BoardEntity b : boards) {
+                if (b.getCode().equals(code)) { //board에 있는 code값과 requestParam으로 받아온 code값이 같을경우
                     board = b; //board에 borad배열의 값을 집어 넣는다.
                     break;
                 }
@@ -56,7 +58,7 @@ public class ArticleController {
     public String postWrite(@SessionAttribute(value = "user") UserEntity user,
                             @RequestParam(value = "fileIndexes", required = false) int[] fileIndexes,
                             ArticleEntity article) {
-        if (fileIndexes == null){
+        if (fileIndexes == null) {
             fileIndexes = new int[0];
         }
         WriteResult result = this.articleService.write(article, fileIndexes, user);
@@ -67,16 +69,17 @@ public class ArticleController {
         }
         return resultObject.toString();
     }
+
     @RequestMapping(value = "image", //이미지를 올리기위한 컨트롤러
-    method = RequestMethod.POST,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postImage(@SessionAttribute(value = "user")UserEntity user,
-                            @RequestParam(value = "upload")MultipartFile file) throws IOException {
+    public String postImage(@SessionAttribute(value = "user") UserEntity user,
+                            @RequestParam(value = "upload") MultipartFile file) throws IOException {
         ImageEntity image = new ImageEntity(file);
         UploadImageResult result = this.articleService.uploadImage(image, user);
         JSONObject responseObject = new JSONObject();
-        if (result == UploadImageResult.SUCCESS){
+        if (result == UploadImageResult.SUCCESS) {
             responseObject.put("url", "/article/image?index=" + image.getIndex());
         } else {
             JSONObject messageObject = new JSONObject();
@@ -87,10 +90,10 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "image", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getImage(@RequestParam(value = "index") int index){
+    public ResponseEntity<byte[]> getImage(@RequestParam(value = "index") int index) {
         ResponseEntity<byte[]> response;
         ImageEntity image = this.articleService.getImage(index);
-        if(image == null){
+        if (image == null) {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             // body, header, status
@@ -106,13 +109,13 @@ public class ArticleController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String postFile(@SessionAttribute(value = "user")UserEntity user,
-                            @RequestParam(value = "file")MultipartFile multipartFile) throws IOException {
+    public String postFile(@SessionAttribute(value = "user") UserEntity user,
+                           @RequestParam(value = "file") MultipartFile multipartFile) throws IOException {
         FileEntity file = new FileEntity(multipartFile);
         UploadFileResult result = this.articleService.uploadFile(file, user);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
-        if (result == UploadFileResult.SUCCESS){
+        if (result == UploadFileResult.SUCCESS) {
             responseObject.put("index", file.getIndex());
         }
         return responseObject.toString();
@@ -122,14 +125,14 @@ public class ArticleController {
             method = RequestMethod.GET,
             produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView getRead(@RequestAttribute(value = "boards") BoardEntity[] boards,
-                                @RequestParam(value = "index")int index,
-                                @RequestParam(value = "page") int page){
+                                @RequestParam(value = "index") int index,
+                                @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         ModelAndView modelAndView = new ModelAndView();
         ArticleDto article = this.articleService.getArticleDto(index);
-        if (article != null && !article.isDeleted()){
+        if (article != null && !article.isDeleted()) {
             BoardEntity board = null; //
-            for (BoardEntity b: boards){
-                if (b.getCode().equals(article.getBoardCode())){
+            for (BoardEntity b : boards) {
+                if (b.getCode().equals(article.getBoardCode())) {
                     board = b; //board에 borad배열의 값을 집어 넣는다.
                     break;
                 }
@@ -145,12 +148,12 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "file", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getFile(@RequestParam(value = "index") int index){
+    public ResponseEntity<byte[]> getFile(@RequestParam(value = "index") int index) {
         ResponseEntity<byte[]> response;
         FileEntity file = this.articleService.getFile(index);
-        if (file == null){
+        if (file == null) {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else {
+        } else {
             ContentDisposition contentDisposition = ContentDisposition
                     .attachment() //다운로드가 되고 inline은 표시가 됨 //첨부파일이니 다운로드 해야하니까
                     .filename(file.getName(), StandardCharsets.UTF_8)
@@ -162,5 +165,17 @@ public class ArticleController {
             response = new ResponseEntity<>(file.getData(), headers, HttpStatus.OK);
         }
         return response;
+    }
+
+    @RequestMapping(value = "comment",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postComment(@SessionAttribute(value = "user") UserEntity user,
+                              CommentEntity comment){
+        WriteCommentResult result = this.articleService.writeComment(comment, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
     }
 }

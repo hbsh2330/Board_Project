@@ -2,6 +2,7 @@ package com.yhp.studybbs.mappers;
 
 import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.entities.ArticleEntity;
+import com.yhp.studybbs.entities.CommentEntity;
 import com.yhp.studybbs.entities.FileEntity;
 import com.yhp.studybbs.entities.ImageEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,4 +32,6 @@ public interface ArticleMapper {
     FileEntity selectFileByIndex(@Param(value = "index") int index);
 
     int updateArticle(ArticleEntity article);
+
+    int insertComment(CommentEntity comment);
 }

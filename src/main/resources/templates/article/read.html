@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -18,7 +18,7 @@
 <main class="content-container-wrapper" id="main" th:if="${article != null && !article.isDeleted()}">
     <div class="content-container">
         <div class="title-container">
-            <h1 class="title" th:text="${article.getTitle()}"></h1>
+            <h1 class="title" th:text="${board.getText()}"></h1>
         </div>
         <table class="table" id="articleTable">
             <thead>
@@ -59,6 +59,68 @@
                             <span class="size">(<th:block th:text="${T(java.lang.Math).floor(file.getSize() / 1024.0 * 100) / 100}"></th:block>KB)</span>
                         </li>
                     </ul>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="4">
+                    <div class="bottom-button-container" th:with="isAuth = ${session.user != null && (session.user.getEmail().equals(article.getUserEmail()) || session.user.isAdmin())}">
+                        <a class="common-button" th:href="@{/board/list (code=${board.getCode()}, page=${page})}">목록</a>
+                        <span class="spring"></span>
+                        <div class="common-button modify" rel="modify" th:if="${isAuth}">수정</div>
+                        <div class="common-button delete" rel="delete" th:if="${isAuth}">삭제</div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <form class="common-form" id="commentForm" th:with="commentRegex =${T(com.yhp.studybbs.regexes.CommentRegex)}">
+            <input hidden name="articleIndex" type="hidden" th:value="${article.getIndex()}">
+            <label class="label">
+                <span class="text">
+                    <span class="left"댓글 (<span rel="count">11</span>)</span>
+                    <span class="right" rel="refresh">다시 불러오기</span>
+                <span class="horizontal">
+                <textarea class="common-field big" maxlength="1000" name="content" placeholder="댓글을 입력해 주세요" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                    <input class="common-button" type="submit" value="댓글 쓰기">
+                </span>
+            </label>
+        </form>
+        <table class="comment-table" id="commentTable">
+            <thead class="loading">
+            <tr>
+                <td>댓글을 불러오고 있습니다.</td>
+            </tr>
+            </thead>
+            <thead class="error">
+            <tr>
+                <td>댓글을 불러오지 못하였습니다. 잠시후 다시 불러오기를 클릭해주세요</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="comment">
+                        <div class="head">
+                            <span class="nickname" rel="nickname">닉네임123</span>
+                            <span class="written-at" rel="writtenAt">2023-11-24 17:24:55</span>
+                            <span class="spring"></span>
+                            <span class="action" rel="modify">수정</span>
+                            <span class="action" rel="delete">삭제</span>
+                            <div class="body">댓글 내용 댓글</div>
+                            <div class="foot">
+                                <span class="action" rel="vote" data-vote="up">
+                                    <img alt="👍" class="icon" th:src="@{/article/resources/images/comment.vote.up.png}">
+                                    <span class="value">173</span>
+                                </span>
+                                <span class="vote" rel="vote" data-vote="down">
+                                    <img alt="" class="icon" th:src="@{/article/resources/images/comment.vote.down.png}">
+                                    <span class="value">27</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>

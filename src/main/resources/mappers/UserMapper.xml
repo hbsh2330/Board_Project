@@ -67,7 +67,7 @@
           AND BINARY `contact_third` = #{contactThird}
         LIMIT 1
     </select>
-
+<!---->
     <select id="selectUserByEmail"
             resultType="com.yhp.studybbs.entities.UserEntity">
         SELECT `email`                AS `email`,

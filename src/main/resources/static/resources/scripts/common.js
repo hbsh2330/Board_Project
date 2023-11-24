@@ -47,6 +47,8 @@ HTMLInputElement.prototype.testRegex = function() {
     return new RegExp(this.dataset.regex).test(this.value);
 }
 
+HTMLTextAreaElement.prototype.testRegex = HTMLInputElement.prototype.testRegex;
+
 
 
 
