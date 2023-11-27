@@ -27,7 +27,7 @@
         </li>
         <li class="spring"></li>
         <li class="item user" th:if="${session.user == null}">
-            <a class="link" th:href="@{/user/login}">
+            <a class="link" th:href="@{/user/login (r = ${#request.getRequestURI() + '?' + #request.getQueryString()})}"> <!-- 로그인에 성공했을 시 다음과 같은 주소로 이동 이유? 게시판을 보고 있다가 로그인을 했을 시 바로 게시판을 보기 위해서 -->
                 <img alt="" class="icon" th:src="@{/resources/images/header.user-login.png}">
                 <span class="text">로그인</span>
             </a>

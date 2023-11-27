@@ -4,7 +4,7 @@
     <insert id="insertEmailAuth"
             parameterType="com.yhp.studybbs.entities.EmailAuthEntity">
         INSERT INTO `study_bbs`.`email_auths` (`email`, `code`, `salt`, `verified_flag`, `created_at`, `expires_at`)
-        VALUES (#{email},
+        VALUES (#{emailInfo},
                 #{code},
                 #{salt},
                 #{isVerified},
@@ -28,18 +28,17 @@
 
     <select id="selectEmailAuthByEmailCodeSalt"
             resultType="com.yhp.studybbs.entities.EmailAuthEntity">
-        SELECT `email`         AS `email`,
+        SELECT `email`         AS `emailInfo`,
                `code`          AS `code`,
                `salt`          AS `salt`,
                `verified_flag` AS `isVerified`,
                `created_at`    AS `createdAt`,
                `expires_at`    AS `expiresAt`
         FROM `study_bbs`.`email_auths`
-        WHERE BINARY `email` = #{email}
-          AND BINARY `code` = #{code}
-          AND BINARY `salt` = #{salt}
+          WHERE `salt` = #{salt}
         LIMIT 1
     </select>
+
 
     <select id="selectUserByContact"
             resultType="com.yhp.studybbs.entities.UserEntity">
@@ -67,7 +66,7 @@
           AND BINARY `contact_third` = #{contactThird}
         LIMIT 1
     </select>
-<!---->
+
     <select id="selectUserByEmail"
             resultType="com.yhp.studybbs.entities.UserEntity">
         SELECT `email`                AS `email`,
@@ -124,7 +123,7 @@
         SET `verified_flag` = #{isVerified},
             `created_at`    = #{createdAt},
             `expires_at`    = #{expiresAt}
-        WHERE BINARY `email` = #{email}
+        WHERE BINARY `email` = #{emailInfo}
           AND BINARY `code` = #{code}
           AND BINARY `salt` = #{salt}
         LIMIT 1

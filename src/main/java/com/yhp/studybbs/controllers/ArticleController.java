@@ -1,6 +1,7 @@
 package com.yhp.studybbs.controllers;
 
 import com.yhp.studybbs.dtos.ArticleDto;
+import com.yhp.studybbs.dtos.CommentDto;
 import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.results.article.UploadFileResult;
 import com.yhp.studybbs.results.article.UploadImageResult;
@@ -8,6 +9,7 @@ import com.yhp.studybbs.results.article.WriteCommentResult;
 import com.yhp.studybbs.results.article.WriteResult;
 import com.yhp.studybbs.services.ArticleService;
 import com.yhp.studybbs.services.BoardService;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping(value = "article")
@@ -177,5 +180,38 @@ public class ArticleController {
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
         return responseObject.toString();
+    }
+
+    @RequestMapping(value = "comment",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String getComment(@SessionAttribute(value = "user", required = false) UserEntity user,
+                             @RequestParam(value = "articleIndex") int articleIndex) {
+        CommentDto[] comments = this.articleService.getCommentDtos(articleIndex);
+        JSONArray responseArray = new JSONArray();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //원하는 DATE형태를 문자열로 만들때 사용
+        for (CommentDto comment : comments) {
+            if (comment.isDeleted()) {
+                continue;
+            }
+            JSONObject commentObject = new JSONObject();
+            commentObject.put("index", comment.getIndex());
+            commentObject.put("articleIndex", comment.getArticleIndex());
+            commentObject.put("userEmail", comment.getUserEmail());
+            commentObject.put("userNickname", comment.getUserNickname());
+            commentObject.put("commentIndex", comment.getCommentIndex());
+            commentObject.put("content", comment.getContent());
+            if (comment.getModifiedAt() == null){
+                commentObject.put("at", dateFormat.format(comment.getWrittenAt()));
+                commentObject.put("isModified", false); // 수정안했으면 최초 작성일시
+            } else {
+                commentObject.put("at", dateFormat.format(comment.getModifiedAt()));
+                commentObject.put("isModified", true); //수정했으면 최종수정일시
+            }
+            commentObject.put("isMine", user != null && (user.getEmail().equals(comment.getUserEmail())|| user.isAdmin())); // 내꺼면 수정/삭제 가능여부
+            responseArray.put(commentObject);
+        }
+        return responseArray.toString();
     }
 }

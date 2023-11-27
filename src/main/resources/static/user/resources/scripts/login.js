@@ -106,7 +106,11 @@ loginForm.onsubmit = function (e) {
                 if (loginForm['remember'].checked) {
                     localStorage.setItem('loginEmail', loginForm['email'].value);
                 }
-                location.href = '../';
+                const url = new URL(location.href)
+                if (url.searchParams.get('r')){ //파라미터를 확인해서 이동할 주소가 있으면 이동
+                    location.href = url.searchParams.get('r');
+                }
+                location.href = '../'; // 아니면 /로 이동
                 break;
             default:
                 dialog.show({

@@ -6,47 +6,18 @@
             keyColumn="index"
             keyProperty="index"
             parameterType="com.yhp.studybbs.entities.ArticleEntity">
-        INSERT INTO `study_bbs`.`articles`(`board_code`,
-                                           `user_email`,
-                                           `title`,
-                                           `content`,
-                                           `view`,
-                                           `written_at`,
-                                           `modified_at`,
-                                           `deleted_flag`)
-        values (#{boardCode},
-                #{userEmail},
-                #{title},
-                #{content},
-                #{view},
-                #{writtenAt},
-                #{modifiedAt},
-                #{isDeleted})
-# useGeneratedKeys="true" index가 자동으로 1씩 추가
-# keyColumn="index"DB의 index를 자동으로 1씩 추가"
-# keyProperty="index" 자바의 ArticleEntity의 index필드값과 매핑
+        INSERT INTO `study_bbs`.`articles` (`board_code`, `user_email`, `title`, `content`, `view`, `written_at`, `modified_at`, `deleted_flag`)
+        VALUES (#{boardCode}, #{userEmail}, #{title}, #{content}, #{view}, #{writtenAt}, #{modifiedAt}, #{isDeleted})
     </insert>
-    <insert id="insertImage"
+
+    <insert id="insertComment"
             useGeneratedKeys="true"
             keyColumn="index"
             keyProperty="index"
-            parameterType="com.yhp.studybbs.entities.ImageEntity">
-        INSERT INTO `study_bbs`.`images` (`name`, `type`, `size`, `data`, `user_email`, `created_at`)
-        VALUES (#{name}, #{type}, #{size}, #{data}, #{userEmail}, #{createdAt})
+            parameterType="com.yhp.studybbs.entities.CommentEntity">
+        INSERT INTO `study_bbs`.`comments` (`article_index`, `user_email`, `comment_index`, `content`, `written_at`, `modified_at`, `deleted_flag`)
+        VALUES (#{articleIndex}, #{userEmail}, #{commentIndex}, #{content}, #{writtenAt}, #{modifiedAt}, #{isDeleted})
     </insert>
-
-    <select id="selectImageByIndex" resultType="com.yhp.studybbs.entities.ImageEntity">
-        SELECT `index`      AS `index`,
-               `name`       AS `name`,
-               `type`       AS `type`,
-               `size`       AS `size`,
-               `data`       AS `data`,
-               `user_email` AS `userEmail`,
-               `created_at` AS `createdAt`
-        FROM `study_bbs`.`images`
-        WHERE `index` = #{index}
-        LIMIT 1
-    </select>
 
     <insert id="insertFile"
             useGeneratedKeys="true"
@@ -57,32 +28,14 @@
         VALUES (#{name}, #{type}, #{size}, #{data}, #{articleIndex}, #{userEmail}, #{createdAt})
     </insert>
 
-    <select id="selectFileByIndexNoData"
-            resultType="com.yhp.studybbs.entities.FileEntity">
-        SELECT `index` AS `index`,
-               `name` AS `name`,
-               `type` AS `type`,
-               `size` AS `size`,
-               `article_index` AS `articleIndex`,
-               `user_email` AS `userEmail`,
-               `created_at` AS `createdAt`
-        FROM `study_bbs`.`files`
-        WHERE `index` = #{index}
-        LIMIT 1
-    </select>
-
-    <update id="updateFileNoData"
-            parameterType="com.yhp.studybbs.entities.FileEntity">
-        UPDATE `study_bbs`.`files`
-        SET `name` = #{name},
-            `type` = #{type},
-            `size` = #{size},
-            `article_index` = #{articleIndex},
-            `user_email` = #{userEmail},
-            `created_at` = #{createdAt}
-        WHERE `index` = #{index}
-        LIMIT 1
-    </update>
+    <insert id="insertImage"
+            useGeneratedKeys="true"
+            keyColumn="index"
+            keyProperty="index"
+            parameterType="com.yhp.studybbs.entities.ImageEntity">
+        INSERT INTO `study_bbs`.`images` (`name`, `type`, `size`, `data`, `user_email`, `created_at`)
+        VALUES (#{name}, #{type}, #{size}, #{data}, #{userEmail}, #{createdAt})
+    </insert>
 
     <select id="selectArticleByIndex"
             resultType="com.yhp.studybbs.entities.ArticleEntity">
@@ -96,34 +49,6 @@
                `modified_at`  AS `modifiedAt`,
                `deleted_flag` AS `isDeleted`
         FROM `study_bbs`.`articles`
-        WHERE `index` = #{index}
-        LIMIT 1
-    </select>
-
-    <select id="selectFilesByArticleIndexNoData"
-            resultType="com.yhp.studybbs.entities.FileEntity">
-        SELECT `index` AS `index`,
-               `name` AS `name`,
-               `type` AS `type`,
-               `size` AS `size`,
-               `article_index` AS `articleIndex`,
-               `user_email` AS `userEmail`,
-               `created_at` AS `createdAt`
-        FROM `study_bbs`.`files`
-        WHERE `article_index` = #{articleIndex}
-    </select>
-
-    <select id="selectFileByIndex"
-            resultType="com.yhp.studybbs.entities.FileEntity">
-        SELECT `index` AS `index`,
-               `name` AS `name`,
-               `type` AS `type`,
-               `size` AS `size`,
-               `data` AS `data`,
-               `article_index` AS `articleIndex`,
-               `user_email` AS `userEmail`,
-               `created_at` AS `createdAt`
-        FROM `study_bbs`.`files`
         WHERE `index` = #{index}
         LIMIT 1
     </select>
@@ -146,6 +71,62 @@
         LIMIT 1
     </select>
 
+    <select id="selectFileByIndex"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `data`          AS `data`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectFileByIndexNoData"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
+    <select id="selectFilesByArticleIndexNoData"
+            resultType="com.yhp.studybbs.entities.FileEntity">
+        SELECT `index`         AS `index`,
+               `name`          AS `name`,
+               `type`          AS `type`,
+               `size`          AS `size`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `created_at`    AS `createdAt`
+        FROM `study_bbs`.`files`
+        WHERE `article_index` = #{articleIndex}
+    </select>
+
+    <select id="selectImageByIndex"
+            resultType="com.yhp.studybbs.entities.ImageEntity">
+        SELECT `index`      AS `index`,
+               `name`       AS `name`,
+               `type`       AS `type`,
+               `size`       AS `size`,
+               `data`       AS `data`,
+               `user_email` AS `userEmail`,
+               `created_at` AS `createdAt`
+        FROM `study_bbs`.`images`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+
     <update id="updateArticle"
             parameterType="com.yhp.studybbs.entities.ArticleEntity">
         UPDATE `study_bbs`.`articles`
@@ -161,19 +142,33 @@
         LIMIT 1
     </update>
 
-    <insert id="insertComment"
-            useGeneratedKeys="true"
-            keyColumn="index"
-            keyProperty="index"
-            parameterType="com.yhp.studybbs.entities.CommentEntity">
-        INSERT INTO `study_bbs`.`comments`(`article_index`, `user_email`, `comment_index`, `content`, `written_at`, `modified_at`, `deleted_flag`)
-        VALUES (
-                   #{articleIndex},
-                   #{userEmail},
-                   #{commentIndex},
-                   #{content},
-                   #{writtenAt},
-                   #{modifiedAt},
-                   #{isDeleted})
-    </insert>
+    <update id="updateFileNoData"
+            parameterType="com.yhp.studybbs.entities.FileEntity">
+        UPDATE `study_bbs`.`files`
+        SET `name`          = #{name},
+            `type`          = #{type},
+            `size`          = #{size},
+            `article_index` = #{articleIndex},
+            `user_email`    = #{userEmail},
+            `created_at`    = #{createdAt}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
+
+    <select id="selectCommentDtosByArticleIndex"
+            resultType="com.yhp.studybbs.dtos.CommentDto">
+        SELECT `comment`.`index`         AS `index`,
+               `comment`.`article_index` AS `articleIndex`,
+               `comment`.`user_email`    AS `userEmail`,
+               `comment`.`comment_index` AS `commentIndex`,
+               `comment`.`content`       AS `content`,
+               `comment`.`written_at`    AS `writtenAt`,
+               `comment`.`modified_at`   AS `modifiedAt`,
+               `comment`.`deleted_flag`  AS `isDeleted`,
+                `user`.`nickname` AS `userNickname`
+        FROM `study_bbs`.`comments` AS `comment`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `comment`.`user_email` = `user`.`email`
+        WHERE `article_index` = #{articleIndex}
+        ORDER BY `comment`.`index`
+    </select>
 </mapper>

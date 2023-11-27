@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -33,7 +33,7 @@
                 <td class="half" th:text="${article.getView()}"></td>
             </tr>
             <tr>
-                <th>작성일시</th>
+                <th>작성 일시</th>
                 <td class="half" th:text="${#dates.format(article.getWrittenAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
                 <th th:if="${article.getModifiedAt() != null}">수정 일시</th>
                 <td class="half" th:if="${article.getModifiedAt() != null}" th:text="${#dates.format(article.getModifiedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
@@ -42,18 +42,17 @@
             <tbody>
             <tr>
                 <td class="content ck-content" colspan="4" th:utext="${article.getContent()}"></td>
-<!-- -->
             </tr>
             </tbody>
             <tbody>
             <tr>
-                <th>첨부파일</th>
+                <th>첨부 파일</th>
                 <td class="file-empty" colspan="3" th:if="${files == null || files.length == 0}">첨부 파일이 없습니다.</td>
                 <td class="file-wrapper" colspan="3" th:if="${files != null && files.length > 0}">
                     <ul class="list">
                         <li class="item" th:each="file : ${files}">
                             <a class="link" target="_blank" th:href="@{/article/file (index=${file.getIndex()})}">
-                                <img alt="" class="icon" th:src="@{/resources/images/read.file.icon.png}">
+                                <img alt="" class="icon" th:src="@{/article/resources/images/read.file.icon.png}">
                                 <span class="name" th:text="${file.getName()}"></span>
                             </a>
                             <span class="size">(<th:block th:text="${T(java.lang.Math).floor(file.getSize() / 1024.0 * 100) / 100}"></th:block>KB)</span>
@@ -75,14 +74,15 @@
             </tr>
             </tfoot>
         </table>
-        <form class="common-form" id="commentForm" th:with="commentRegex =${T(com.yhp.studybbs.regexes.CommentRegex)}">
+        <form class="comment-form" id="commentForm" th:with="commentRegex = ${T(com.yhp.studybbs.regexes.CommentRegex)}">
             <input hidden name="articleIndex" type="hidden" th:value="${article.getIndex()}">
             <label class="label">
                 <span class="text">
-                    <span class="left"댓글 (<span rel="count">11</span>)</span>
+                    <span class="left">댓글 (<span rel="count">11</span>)</span>
                     <span class="right" rel="refresh">다시 불러오기</span>
+                </span>
                 <span class="horizontal">
-                <textarea class="common-field big" maxlength="1000" name="content" placeholder="댓글을 입력해 주세요" th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
+                    <textarea class="common-field big" maxlength="1000" name="content" placeholder="댓글을 입력해 주세요." th:data-regex="${commentRegex.CONTENT.expression}"></textarea>
                     <input class="common-button" type="submit" value="댓글 쓰기">
                 </span>
             </label>
@@ -90,12 +90,12 @@
         <table class="comment-table" id="commentTable">
             <thead class="loading">
             <tr>
-                <td>댓글을 불러오고 있습니다.</td>
+                <td>댓글을 불러오고 있습니다...</td>
             </tr>
             </thead>
             <thead class="error">
             <tr>
-                <td>댓글을 불러오지 못하였습니다. 잠시후 다시 불러오기를 클릭해주세요</td>
+                <td>댓글을 불러오지 못하였습니다. 잠시 후 다시 불러오기를 클릭해 주세요.</td>
             </tr>
             </thead>
             <tbody>
@@ -108,18 +108,27 @@
                             <span class="spring"></span>
                             <span class="action" rel="modify">수정</span>
                             <span class="action" rel="delete">삭제</span>
-                            <div class="body">댓글 내용 댓글</div>
-                            <div class="foot">
-                                <span class="action" rel="vote" data-vote="up">
-                                    <img alt="👍" class="icon" th:src="@{/article/resources/images/comment.vote.up.png}">
-                                    <span class="value">173</span>
-                                </span>
-                                <span class="vote" rel="vote" data-vote="down">
-                                    <img alt="" class="icon" th:src="@{/article/resources/images/comment.vote.down.png}">
-                                    <span class="value">27</span>
-                                </span>
-                            </div>
                         </div>
+                        <div class="body">댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용</div>
+                        <div class="foot">
+                            <span class="vote" rel="vote" data-vote="up">
+                                <img alt="👍" class="icon" th:src="@{/article/resources/images/comment.vote.up.png}">
+                                <span class="value">173</span>
+                            </span>
+                            <span class="vote" rel="vote" data-vote="down">
+                                <img alt="👎" class="icon" th:src="@{/article/resources/images/comment.vote.down.png}">
+                                <span class="value">27</span>
+                            </span>
+                            <span class="spring"></span>
+                            <span class="action" rel="reply">답글 달기</span>
+                            <span class="action" rel="replyCancel">답글 달기 취소</span>
+                        </div>
+                        <form class="reply-form" rel="replyForm">
+                            <label class="label">
+                                <input hidden type="hidden" value="?">
+                                <textarea class="common-field big" maxlength="1000" name="content" placeholder="답글을 입력해 주세요."></textarea>
+                            </label>
+                        </form>
                     </div>
                 </td>
             </tr>

@@ -1,6 +1,7 @@
 package com.yhp.studybbs.services;
 
 import com.yhp.studybbs.dtos.ArticleDto;
+import com.yhp.studybbs.dtos.CommentDto;
 import com.yhp.studybbs.entities.*;
 import com.yhp.studybbs.mappers.ArticleMapper;
 import com.yhp.studybbs.mappers.BoardMapper;
@@ -106,5 +107,9 @@ public class ArticleService {
         return this.articleMapper.insertComment(comment) > 0
                 ? WriteCommentResult.SUCCESS
                 : WriteCommentResult.FAILURE;
+    }
+
+    public CommentDto[] getCommentDtos(int articleIndex) {
+        return this.articleMapper.selectCommentDtosByArticleIndex(articleIndex);
     }
 }

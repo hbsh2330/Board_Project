@@ -48,7 +48,7 @@ HTMLInputElement.prototype.testRegex = function() {
 }
 
 HTMLTextAreaElement.prototype.testRegex = HTMLInputElement.prototype.testRegex;
-
+//input 이 아닌 textarea에서 정규식을 사용하기 위한거
 
 
 

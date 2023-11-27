@@ -10,38 +10,35 @@
     <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
     <link rel="stylesheet" th:href="@{/article/resources/stylesheets/write.css}">
     <script defer th:src="@{/resources/scripts/common.js}"></script>
-    <script defer th:src="@{/article/resources/libraries/ckeditor/ckeditor.js}"></script>
+    <script th:src="@{/article/resources/libraries/ckeditor/ckeditor.js}"></script>
     <script defer th:src="@{/article/resources/scripts/write.js}"></script>
-
 </head>
 <body>
 <th:block th:replace="~{fragments.html :: common}"></th:block>
 <th:block th:replace="~{fragments.html :: header}"></th:block>
-<main class="content-container-wrapper" id="main" th:if="${board !=null && allowed == true}">
+<main class="content-container-wrapper" id="main" th:if="${board != null && allowed == true}">
     <div class="content-container">
         <div class="title-container">
-            <h1 class="title">게시글작성 - <th:block th:text="${board.getText()}"></th:block></h1>
+            <h1 class="title">게시글 작성 - <th:block th:text="${board.getText()}"></th:block></h1>
         </div>
-        <form class="write-form" id="writeForm" th:with="articleRegex =${T(com.yhp.studybbs.regexes.ArticleRegex)}">
-            <input name="code" type="hidden" th:value="${board.getCode()}">
+        <form class="write-form" id="writeForm" th:with="articleRegex = ${T(com.yhp.studybbs.regexes.ArticleRegex)}">
+            <input hidden name="code" type="hidden" th:value="${board.getCode()}">
             <label class="label">
-                <span class="title">제목</span>
-                <input class="common-field"
-                maxlength="100" name="title"
-                placeholder="제목을 입력해주세요." type="text" th:data-regex="${articleRegex.TITLE.expression}">
+                <span class="text">제목</span>
+                <input autofocus class="common-field" maxlength="100" name="title" placeholder="제목을 입력해 주세요." type="text" th:data-regex="${articleRegex.TITLE.expression}">
             </label>
             <label class="label">
-                <span class="title">내용</span>
-                <textarea class="common-field" maxlength="10000" name="content" placeholder="내용을 입력해주세요" rows="10"></textarea>
+                <span class="text">내용</span>
+                <textarea class="common-field" maxlength="10000" name="content" placeholder="내용을 입력해 주세요." rows="15"></textarea>
             </label>
             <div class="label file-wrapper">
                 <input hidden name="file" type="file">
                 <span class="text">첨부파일</span>
                 <div class="files">
-                    <ul class="list" rel="fileList">
-                    </ul>
+                    <ul class="list" rel="fileList"></ul>
                     <button class="common-button" name="fileAdd" title="첨부파일 추가">
-                        <img alt="+" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAASElEQVR4nGNgGAVDCqhvSV4OwjSzQGNL8jcQHrUAJ9AYDSIQACVDWFBgwf+hGKs8UUmY5hbgAxqjkUwIaIwG0YAX16OAgRYAAFD9ghGwLNbcAAAAAElFTkSuQmCC"></button>
+                        <img alt="+" class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAASElEQVR4nGNgGAVDCqhvSV4OwjSzQGNL8jcQHrUAJ9AYDSIQACVDWFBgwf+hGKs8UUmY5hbgAxqjkUwIaIwG0YAX16OAgRYAAFD9ghGwLNbcAAAAAElFTkSuQmCC">
+                    </button>
                 </div>
             </div>
             <div class="button-container">
