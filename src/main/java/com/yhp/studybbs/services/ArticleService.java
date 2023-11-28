@@ -7,10 +7,7 @@ import com.yhp.studybbs.mappers.ArticleMapper;
 import com.yhp.studybbs.mappers.BoardMapper;
 import com.yhp.studybbs.regexes.ArticleRegex;
 import com.yhp.studybbs.regexes.CommentRegex;
-import com.yhp.studybbs.results.article.UploadFileResult;
-import com.yhp.studybbs.results.article.UploadImageResult;
-import com.yhp.studybbs.results.article.WriteCommentResult;
-import com.yhp.studybbs.results.article.WriteResult;
+import com.yhp.studybbs.results.article.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,5 +108,34 @@ public class ArticleService {
 
     public CommentDto[] getCommentDtos(int articleIndex) {
         return this.articleMapper.selectCommentDtosByArticleIndex(articleIndex);
+    }
+
+    public AlterCommentLikeResult alterCommentLike(int commentIndex, Boolean status, UserEntity user){
+        // commentIndex & user.email 로 가져온 CommentLikeEntity가 없고(null)이고
+        // status 가 true 라면 좋아요로 Insert
+        // status 가 false 라면 싫어요로 Insert
+        // status 가 null 이라면, 논리적 오류
+
+        // commentIndex & user.email 로 가져온 CommentLikeEntity가 있고(null이 아니고)
+        // status 가 true 라면 좋아요로 수정
+        // status 가 false 라면 싫어요로 수정
+        // status 가 null 이라면, DELETE
+        CommentLikeEntity commentLike = this.articleMapper.selectCommentLike(user.getEmail(), commentIndex);
+        if (commentLike == null){ //사용자가 좋아요, 싫어요 한적이 없다.
+            commentLike = new CommentLikeEntity()
+                    .setUserEmail(user.getEmail())
+                    .setCommentIndex(commentIndex)
+                    .setLike(status);
+        } else {
+            if (status == null){
+                return this.articleMapper.deleteCommentLike(user.getEmail(), commentIndex) > 0
+                        ? AlterCommentLikeResult.SUCCESS
+                        : AlterCommentLikeResult.FAILURE;
+            }
+            commentLike.setLike(status);
+        }
+        return this.articleMapper.insertCommentLike(commentLike) > 0
+                ? AlterCommentLikeResult.SUCCESS
+                : AlterCommentLikeResult.FAILURE;
     }
 }

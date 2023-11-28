@@ -328,6 +328,10 @@
     background-color: #5dade2;
 }
 
+#commentTable .comment.sub {
+    margin-left: 3rem;
+}
+
 #commentTable .comment > .reply-form {
     height: 0;
     box-sizing: border-box;

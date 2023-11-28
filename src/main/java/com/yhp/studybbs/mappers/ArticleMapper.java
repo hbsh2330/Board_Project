@@ -2,10 +2,7 @@ package com.yhp.studybbs.mappers;
 
 import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.dtos.CommentDto;
-import com.yhp.studybbs.entities.ArticleEntity;
-import com.yhp.studybbs.entities.CommentEntity;
-import com.yhp.studybbs.entities.FileEntity;
-import com.yhp.studybbs.entities.ImageEntity;
+import com.yhp.studybbs.entities.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,4 +34,12 @@ public interface ArticleMapper {
     int insertComment(CommentEntity comment);
 
     CommentDto[] selectCommentDtosByArticleIndex(@Param(value = "articleIndex") int articleIndex);
+
+    CommentLikeEntity selectCommentLike(@Param(value = "userEmail") String userEmail,
+                                        @Param(value = "commentIndex") int commentIndex);
+
+    int deleteCommentLike(@Param(value = "userEmail") String userEmail,
+                          @Param(value = "commentIndex") int commentIndex);
+
+    int insertCommentLike(CommentLikeEntity commentLike);
 }

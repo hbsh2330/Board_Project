@@ -3,10 +3,7 @@ package com.yhp.studybbs.controllers;
 import com.yhp.studybbs.dtos.ArticleDto;
 import com.yhp.studybbs.dtos.CommentDto;
 import com.yhp.studybbs.entities.*;
-import com.yhp.studybbs.results.article.UploadFileResult;
-import com.yhp.studybbs.results.article.UploadImageResult;
-import com.yhp.studybbs.results.article.WriteCommentResult;
-import com.yhp.studybbs.results.article.WriteResult;
+import com.yhp.studybbs.results.article.*;
 import com.yhp.studybbs.services.ArticleService;
 import com.yhp.studybbs.services.BoardService;
 import org.json.JSONArray;
@@ -213,5 +210,18 @@ public class ArticleController {
             responseArray.put(commentObject);
         }
         return responseArray.toString();
+    }
+
+    @RequestMapping(value = "comment",
+            method = RequestMethod.PUT,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String putComment(@SessionAttribute(value = "user") UserEntity user,
+                             @RequestParam(value = "commentIndex") int commentIndex,
+                             @RequestParam(value = "status", required = false) Boolean status){
+        AlterCommentLikeResult result = this.articleService.alterCommentLike(commentIndex, status, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
     }
 }

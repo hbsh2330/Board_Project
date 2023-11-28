@@ -171,4 +171,29 @@
         WHERE `article_index` = #{articleIndex}
         ORDER BY `comment`.`index`
     </select>
+
+    <select id="selectCommentLike"
+            resultType="com.yhp.studybbs.entities.CommentLikeEntity">
+        SELECT `user_email`    AS `userEmail`,
+               `comment_index` AS `commentIndex`,
+               `like_flag`     AS `isLike`
+        FROM `study_bbs`.`comment_likes`
+        WHERE `comment_index` = #{commentIndex}
+          AND BINARY `user_email` = #{userEmail}
+        LIMIT 1
+    </select>
+
+    <delete id="deleteCommentLike">
+        DELETE
+        FROM `study_bbs`.`comment_like`
+
+
+    </delete>
+
+    <insert id="insertCommentLike"
+            parameterType="com.yhp.studybbs.entities.CommentLikeEntity">
+        INSERT INTO `study_bbs`.`comment_likes`(`user_email`, `comment_index`, `like_flag`)
+        VALUES (#{userEmail}, #{commentIndex}, #{isLike})
+         ON DUPLICATE KEY UPDATE `like_flag` = #{isLikek}
+    </insert>
 </mapper>
