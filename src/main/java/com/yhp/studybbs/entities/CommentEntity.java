@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class CommentEntity {
-    private int index ;
+    private int index;
     private int articleIndex;
     private String userEmail;
     private Integer commentIndex;

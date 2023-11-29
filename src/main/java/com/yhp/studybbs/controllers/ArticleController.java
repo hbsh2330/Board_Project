@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.xml.stream.events.Comment;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -185,13 +186,10 @@ public class ArticleController {
     @ResponseBody
     public String getComment(@SessionAttribute(value = "user", required = false) UserEntity user,
                              @RequestParam(value = "articleIndex") int articleIndex) {
-        CommentDto[] comments = this.articleService.getCommentDtos(articleIndex);
+        CommentDto[] comments = this.articleService.getCommentDtos(articleIndex, user == null ? null : user.getEmail());
         JSONArray responseArray = new JSONArray();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //원하는 DATE형태를 문자열로 만들때 사용
         for (CommentDto comment : comments) {
-            if (comment.isDeleted()) {
-                continue;
-            }
             JSONObject commentObject = new JSONObject();
             commentObject.put("index", comment.getIndex());
             commentObject.put("articleIndex", comment.getArticleIndex());
@@ -207,6 +205,12 @@ public class ArticleController {
                 commentObject.put("isModified", true); //수정했으면 최종수정일시
             }
             commentObject.put("isMine", user != null && (user.getEmail().equals(comment.getUserEmail())|| user.isAdmin())); // 내꺼면 수정/삭제 가능여부
+            if (!comment.isDeleted()){
+                commentObject.put("content", comment.getContent());
+                commentObject.put("likeCount", comment.getLikeCount());
+                commentObject.put("likeStatus", comment.getLikeStatus());
+                commentObject.put("dislikeCount", comment.getDislikeCount());
+            }
             responseArray.put(commentObject);
         }
         return responseArray.toString();
@@ -220,6 +224,24 @@ public class ArticleController {
                              @RequestParam(value = "commentIndex") int commentIndex,
                              @RequestParam(value = "status", required = false) Boolean status){
         AlterCommentLikeResult result = this.articleService.alterCommentLike(commentIndex, status, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        if (result == AlterCommentLikeResult.SUCCESS){
+            CommentDto comment = this.articleService.getCommentDto(commentIndex, user.getEmail());
+            responseObject.put("likeCount", comment.getLikeCount());
+            responseObject.put("likeStatus", comment.getLikeStatus());
+            responseObject.put("dislikeCount", comment.getDislikeCount());
+        }
+        return responseObject.toString();
+    }
+
+    @RequestMapping(value = "comment",
+    method = RequestMethod.DELETE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteComment(@SessionAttribute(value = "user") UserEntity user,
+                                @RequestParam(value = "index") int index){
+        DeleteCommentResult result = this.articleService.deleteComment(index, user);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
         return responseObject.toString();

@@ -33,7 +33,11 @@ public interface ArticleMapper {
 
     int insertComment(CommentEntity comment);
 
-    CommentDto[] selectCommentDtosByArticleIndex(@Param(value = "articleIndex") int articleIndex);
+    CommentDto[] selectCommentDtosByArticleIndex(@Param(value = "articleIndex") int articleIndex,
+                                                 @Param(value = "userEmail") String userEmail);
+
+    CommentDto selectCommentDtoByArticleIndex(@Param(value = "commentIndex") int commentIndex,
+                                              @Param(value = "userEmail") String userEmail);
 
     CommentLikeEntity selectCommentLike(@Param(value = "userEmail") String userEmail,
                                         @Param(value = "commentIndex") int commentIndex);
@@ -42,4 +46,8 @@ public interface ArticleMapper {
                           @Param(value = "commentIndex") int commentIndex);
 
     int insertCommentLike(CommentLikeEntity commentLike);
+
+    CommentEntity selectCommentByIndex(@Param(value = "index") int index);
+
+    int updateComment(CommentEntity comment);
 }

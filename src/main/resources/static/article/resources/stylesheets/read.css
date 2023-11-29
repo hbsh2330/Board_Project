@@ -374,7 +374,12 @@
     flex: 1;
 }
 
-
+#commentTable .comment.deleted > .body {
+    background-color: #eaecee;
+    border-radius: 0.375rem;
+    color: #808b96;
+    font-style: italic;
+}
 
 
 

@@ -157,17 +157,30 @@
 
     <select id="selectCommentDtosByArticleIndex"
             resultType="com.yhp.studybbs.dtos.CommentDto">
-        SELECT `comment`.`index`         AS `index`,
-               `comment`.`article_index` AS `articleIndex`,
-               `comment`.`user_email`    AS `userEmail`,
-               `comment`.`comment_index` AS `commentIndex`,
-               `comment`.`content`       AS `content`,
-               `comment`.`written_at`    AS `writtenAt`,
-               `comment`.`modified_at`   AS `modifiedAt`,
-               `comment`.`deleted_flag`  AS `isDeleted`,
-                `user`.`nickname` AS `userNickname`
+        SELECT `comment`.`index`                         AS `index`,
+               `comment`.`article_index`                 AS `articleIndex`,
+               `comment`.`user_email`                    AS `userEmail`,
+               `comment`.`comment_index`                 AS `commentIndex`,
+               `comment`.`content`                       AS `content`,
+               `comment`.`written_at`                    AS `writtenAt`,
+               `comment`.`modified_at`                   AS `modifiedAt`,
+               `comment`.`deleted_flag`                  AS `isDeleted`,
+               `user`.`nickname`                         AS `userNickname`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = TRUE)  AS `likeCount`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = FALSE) AS `dislikeCount`,
+            IF(`commentLike`.`like_flag` IS NULL, 0,
+            IF(`commentLike`.`like_flag` = TRUE, 1, -1)) AS `likeStatus`
         FROM `study_bbs`.`comments` AS `comment`
                  LEFT JOIN `study_bbs`.`users` AS `user` ON `comment`.`user_email` = `user`.`email`
+                 LEFT JOIN `study_bbs`.`comment_likes` AS `commentLike`
+                           ON `comment`.`index` = `commentLike`.`comment_index` AND
+                              `commentLike`.`user_email` = #{userEmail}
         WHERE `article_index` = #{articleIndex}
         ORDER BY `comment`.`index`
     </select>
@@ -185,15 +198,76 @@
 
     <delete id="deleteCommentLike">
         DELETE
-        FROM `study_bbs`.`comment_like`
-
-
+        FROM `study_bbs`.`comment_likes`
+        WHERE `comment_index` = #{commentIndex}
+        AND BINARY `user_email` = #{userEmail}
+        LIMIT 1
     </delete>
 
     <insert id="insertCommentLike"
             parameterType="com.yhp.studybbs.entities.CommentLikeEntity">
         INSERT INTO `study_bbs`.`comment_likes`(`user_email`, `comment_index`, `like_flag`)
         VALUES (#{userEmail}, #{commentIndex}, #{isLike})
-         ON DUPLICATE KEY UPDATE `like_flag` = #{isLikek}
+         ON DUPLICATE KEY UPDATE `like_flag` = #{isLike}
     </insert>
+
+    <select id="selectCommentDtoByArticleIndex"
+            resultType="com.yhp.studybbs.dtos.CommentDto">
+
+        SELECT `comment`.`index`                         AS `index`,
+               `comment`.`article_index`                 AS `articleIndex`,
+               `comment`.`user_email`                    AS `userEmail`,
+               `comment`.`comment_index`                 AS `commentIndex`,
+               `comment`.`content`                       AS `content`,
+               `comment`.`written_at`                    AS `writtenAt`,
+               `comment`.`modified_at`                   AS `modifiedAt`,
+               `comment`.`deleted_flag`                  AS `isDeleted`,
+               `user`.`nickname`                         AS `userNickname`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = TRUE)  AS `likeCount`,
+               (SELECT COUNT(0)
+                FROM `study_bbs`.`comment_likes` AS `commentLike`
+                WHERE `comment`.`index` = `commentLike`.`comment_index`
+                  AND `commentLike`.`like_flag` = FALSE) AS `dislikeCount` ,
+               IF(`commentLike`.`like_flag` IS NULL, 0,
+                  IF(`commentLike`.`like_flag` = TRUE, 1, -1)) AS `likeStatus`
+        FROM `study_bbs`.`comments` AS `comment`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `comment`.`user_email` = `user`.`email`
+                 LEFT JOIN `study_bbs`.`comment_likes` AS `commentLike`
+                           ON `comment`.`index` = `commentLike`.`comment_index` AND
+                              `commentLike`.`user_email` = #{userEmail}
+        WHERE `comment`.`index` = #{commentIndex}
+        LIMIT 1
+    </select>
+
+    <select id="selectCommentByIndex"
+            resultType="com.yhp.studybbs.entities.CommentEntity">
+        SELECT `index`         AS `index`,
+               `article_index` AS `articleIndex`,
+               `user_email`    AS `userEmail`,
+               `comment_index` AS `commentIndex`,
+               `content`       AS `content`,
+               `written_at`    AS `writtenAt`,
+               `modified_at`   AS `modifiedAt`,
+               `deleted_flag`  AS `isDeleted`
+        FROM study_bbs.`comments`
+        WHERE `index` = #{index}
+        LIMIT 1
+    </select>
+    
+    <update id="updateComment"
+            parameterType="com.yhp.studybbs.entities.CommentEntity">
+        UPDATE `study_bbs`.`comments`
+        SET `article_index` = #{articleIndex},
+            `user_email`    = #{userEmail},
+            `comment_index` = #{commentIndex},
+            `content`       = #{content},
+            `written_at`    = #{writtenAt},
+            `modified_at`   = #{modifiedAt},
+            `deleted_flag`  = #{isDeleted}
+        WHERE `index` = #{index}
+        LIMIT 1
+    </update>
 </mapper>
