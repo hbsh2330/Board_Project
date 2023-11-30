@@ -163,8 +163,9 @@ comment.append = function (allComments, targetComment, step) {
             </div>
             <form class="reply-form" rel="replyForm">
                 <label class="label">
-                    <textarea class="common-field" maxlength="1000" name="content" placeholder="답글을 입력해 주세요." data-regex="${commentForm['content'].getAttribute('data-regex')}"></textarea>
+                    <textarea class="common-field" maxlength="1000" name="content" placeholder="답글을 입력해 주세요." data-regex="${commentForm['content'].getAttribute('data-regex')}"></textarea> 
                 </label>
+                <!-- html for문 돌리기 위해서 사용-->
                 <input class="common-button" type="submit" value="답글 달기">
             </form>` : ''}
         </div>`, 'text/html').querySelector('[rel="comment"]');
