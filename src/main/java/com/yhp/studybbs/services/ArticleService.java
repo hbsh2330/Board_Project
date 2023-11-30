@@ -11,6 +11,7 @@ import com.yhp.studybbs.results.article.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 
 @Service
@@ -156,4 +157,61 @@ public class ArticleService {
                 ? DeleteCommentResult.SUCCESS
                 : DeleteCommentResult.FAILURE;
     }
+
+    public ModifyCommentResult modifyComment(CommentEntity comment, UserEntity user){
+        if (!CommentRegex.CONTENT.matches(comment.getContent())){
+            return ModifyCommentResult.FAILURE;
+        }
+        CommentEntity dbComment = this.articleMapper.selectCommentByIndex(comment.getIndex());
+        if (dbComment == null){
+            return ModifyCommentResult.FAILURE;
+        }
+        if (!comment.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
+            return ModifyCommentResult.FAILURE;
+        }
+        dbComment.setContent(comment.getContent());
+        dbComment.setModifiedAt(new Date());
+        return this.articleMapper.updateComment(dbComment) > 0
+                ? ModifyCommentResult.SUCCESS
+                : ModifyCommentResult.FAILURE;
+    }
+
+    public DeleteResult delete(int index, UserEntity user){
+        ArticleEntity article = this.articleMapper.selectArticleByIndex(index);
+        if (article == null){
+            return DeleteResult.FAILURE;
+        }
+        if (!article.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
+            return DeleteResult.FAILURE;
+        }
+        article.setDeleted(true);
+        return this.articleMapper.updateArticle(article) > 0
+                ? DeleteResult.SUCCESS
+                : DeleteResult.FAILURE;
+    }
+
+     public ModifyResult modify(ArticleEntity article, int[] fileIndexes, UserEntity user){
+        if (!ArticleRegex.TITLE.matches(article.getTitle())){
+            return ModifyResult.FAILURE;
+        }
+        ArticleEntity dbArticle = this.articleMapper.selectArticleByIndex(article.getIndex());
+        if (dbArticle == null){
+            return ModifyResult.FAILURE;
+        }
+        if (!dbArticle.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
+            return ModifyResult.FAILURE;
+        }
+        dbArticle.setTitle(article.getTitle())
+                .setContent(article.getContent())
+                .setModifiedAt(new Date());
+        FileEntity[] originalFiles = this.getFilesOf(article);
+        for (FileEntity originalFile : originalFiles){
+            if (Arrays.stream(fileIndexes).noneMatch(x -> x == originalFile.getIndex())){
+
+            }
+        }
+        return this.articleMapper.updateArticle(dbArticle) > 0
+                ? ModifyResult.SUCCESS
+                : ModifyResult.FAILURE;
+     }
 }

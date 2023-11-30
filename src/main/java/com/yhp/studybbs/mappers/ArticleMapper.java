@@ -50,4 +50,6 @@ public interface ArticleMapper {
     CommentEntity selectCommentByIndex(@Param(value = "index") int index);
 
     int updateComment(CommentEntity comment);
+
+    int deleteFileByIndex(@Param(value = "index") int index);
 }

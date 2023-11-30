@@ -20,7 +20,7 @@
         <div class="title-container">
             <h1 class="title" th:text="${board.getText()}"></h1>
         </div>
-        <table class="table" id="articleTable">
+        <table class="table" id="articleTable" th:data-index="${article.getIndex()}" th:data-board-code="${board.getCode()}">
             <thead>
             <tr>
                 <th>제목</th>
@@ -67,7 +67,7 @@
                     <div class="bottom-button-container" th:with="isAuth = ${session.user != null && (session.user.getEmail().equals(article.getUserEmail()) || session.user.isAdmin())}">
                         <a class="common-button" th:href="@{/board/list (code=${board.getCode()}, page=${page})}">목록</a>
                         <span class="spring"></span>
-                        <div class="common-button modify" rel="modify" th:if="${isAuth}">수정</div>
+                        <a class="common-button modify" rel="modify" th:if="${isAuth}" th:href="@{/article/modify(index=${article.getIndex()})}">수정</a>
                         <div class="common-button delete" rel="delete" th:if="${isAuth}">삭제</div>
                     </div>
                 </td>
@@ -108,8 +108,15 @@
                             <span class="spring"></span>
                             <span class="action" rel="modify">수정</span>
                             <span class="action" rel="delete">삭제</span>
+                            <span class="action" rel="modifyCancel">수정 취소</span>
                         </div>
-                        <div class="body">댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용댓글 내용 댓글 내용 댓글 내용 댓글 내용 댓글 내용</div>
+                        <div class="body">
+                            <span class="content">댓글 내용</span>
+                            <form class="modify-form" rel="modifyForm">
+                                <textarea class="common-field" maxlength="1000" name="content" placeholder="댓글을 입력해주세요"></textarea>
+                                <input class="common-button" type="submit" value="댓글수정">
+                            </form>
+                        </div>
                         <div class="foot">
                             <span class="vote" rel="vote" data-vote="up">
                                 <img alt="👍" class="icon" th:src="@{/article/resources/images/comment.vote.up.png}">

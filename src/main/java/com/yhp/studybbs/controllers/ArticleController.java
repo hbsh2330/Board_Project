@@ -19,6 +19,7 @@ import javax.xml.stream.events.Comment;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 @Controller
 @RequestMapping(value = "article")
@@ -173,7 +174,7 @@ public class ArticleController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String postComment(@SessionAttribute(value = "user") UserEntity user,
-                              CommentEntity comment){
+                              CommentEntity comment) {
         WriteCommentResult result = this.articleService.writeComment(comment, user);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
@@ -196,16 +197,16 @@ public class ArticleController {
             commentObject.put("userEmail", comment.getUserEmail());
             commentObject.put("userNickname", comment.getUserNickname());
             commentObject.put("commentIndex", comment.getCommentIndex());
-            commentObject.put("content", comment.getContent());
-            if (comment.getModifiedAt() == null){
+//            commentObject.put("content", comment.getContent());
+            if (comment.getModifiedAt() == null) {
                 commentObject.put("at", dateFormat.format(comment.getWrittenAt()));
                 commentObject.put("isModified", false); // 수정안했으면 최초 작성일시
             } else {
                 commentObject.put("at", dateFormat.format(comment.getModifiedAt()));
                 commentObject.put("isModified", true); //수정했으면 최종수정일시
             }
-            commentObject.put("isMine", user != null && (user.getEmail().equals(comment.getUserEmail())|| user.isAdmin())); // 내꺼면 수정/삭제 가능여부
-            if (!comment.isDeleted()){
+            commentObject.put("isMine", user != null && (user.getEmail().equals(comment.getUserEmail()) || user.isAdmin())); // 내꺼면 수정/삭제 가능여부
+            if (!comment.isDeleted()) {
                 commentObject.put("content", comment.getContent());
                 commentObject.put("likeCount", comment.getLikeCount());
                 commentObject.put("likeStatus", comment.getLikeStatus());
@@ -218,15 +219,15 @@ public class ArticleController {
 
     @RequestMapping(value = "comment",
             method = RequestMethod.PUT,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String putComment(@SessionAttribute(value = "user") UserEntity user,
                              @RequestParam(value = "commentIndex") int commentIndex,
-                             @RequestParam(value = "status", required = false) Boolean status){
+                             @RequestParam(value = "status", required = false) Boolean status) {
         AlterCommentLikeResult result = this.articleService.alterCommentLike(commentIndex, status, user);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
-        if (result == AlterCommentLikeResult.SUCCESS){
+        if (result == AlterCommentLikeResult.SUCCESS) {
             CommentDto comment = this.articleService.getCommentDto(commentIndex, user.getEmail());
             responseObject.put("likeCount", comment.getLikeCount());
             responseObject.put("likeStatus", comment.getLikeStatus());
@@ -236,14 +237,71 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "comment",
-    method = RequestMethod.DELETE,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteComment(@SessionAttribute(value = "user") UserEntity user,
-                                @RequestParam(value = "index") int index){
+                                @RequestParam(value = "index") int index) {
         DeleteCommentResult result = this.articleService.deleteComment(index, user);
         JSONObject responseObject = new JSONObject();
         responseObject.put("result", result.name().toLowerCase());
         return responseObject.toString();
+    }
+
+    @RequestMapping(value = "comment",
+            method = RequestMethod.PATCH,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String patchComment(@SessionAttribute(value = "user") UserEntity user,
+                               CommentEntity comment) {
+        ModifyCommentResult result = this.articleService.modifyComment(comment, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
+    }
+
+    @RequestMapping(value = "read",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String deleteRead(@SessionAttribute(value = "user") UserEntity user,
+                             @RequestParam(value = "index") int index) {
+        DeleteResult result = this.articleService.delete(index, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
+    }
+
+    @RequestMapping(value = "modify",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public ModelAndView getModify(@SessionAttribute(value = "user") UserEntity user,
+                                  @RequestParam(value = "index") int index,
+                                  @RequestAttribute(value = "boards"
+                                  ) BoardEntity[] boards){
+        ModelAndView modelAndView = new ModelAndView();
+        ArticleDto article = this.articleService.getArticleDto(index);
+        if (article.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
+            article = null;
+        } else {
+            final String boardCode = article.getBoardCode();
+            BoardEntity board = Arrays.stream(boards).filter(x -> x.getCode().equals(boardCode)).findFirst().orElse(null);
+            FileEntity[] files = this.articleService.getFilesOf(article);
+            modelAndView.addObject("board", board);
+            modelAndView.addObject("files", files);
+        }
+        modelAndView.setViewName("article/modify");
+        modelAndView.addObject("article", article);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "modify",
+    method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String postModify(@SessionAttribute(value = "user") UserEntity user,
+                             @RequestParam(value = "fileIndexes") int[] fileIndexes,
+                             ArticleEntity article){
+        return null;
     }
 }

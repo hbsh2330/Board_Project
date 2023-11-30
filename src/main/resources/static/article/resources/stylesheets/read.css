@@ -212,6 +212,10 @@
     justify-content: flex-start;
 }
 
+#commentTable .comment.sub {
+    margin-left: 3rem;
+}
+
 #commentTable .comment > .head {
     background-color: #abb2b9;
     border-radius: 0.375rem;
@@ -224,6 +228,10 @@
     flex-direction: row;
     gap: 0.375rem;
     justify-content: flex-start;
+}
+
+#commentTable .comment.mine > .head {
+    background-color: #5dade2;
 }
 
 #commentTable .comment > .head > .nickname {
@@ -246,12 +254,59 @@
     text-decoration: underline;
 }
 
+#commentTable .comment > .head > .action[rel="modifyCancel"] {
+    display: none;
+}
+
+#commentTable .comment.modifying > .head > .action[rel="modify"],
+#commentTable .comment.modifying > .head > .action[rel="delete"] {
+    display: none;
+}
+
+
+
+
 #commentTable .comment > .body {
     background-color: #ffffff;
     border-bottom: 0.0625rem solid #d5d8dc88;
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
     padding: 0.75rem;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#commentTable .comment > .body > .modify-form {
+    align-items: stretch;
+    display: none;
+    flex-direction: row;
+    gap: 0.375rem;
+    justify-content: flex-start;
+}
+
+#commentTable .comment.modifying > .body > .modify-form {
+    display: flex;
+}
+
+#commentTable .comment.modifying > .body > .content {
+    display: none;
+}
+
+
+
+#commentTable .comment > .body > .modify-form  > .common-field {
+    flex: 1;
+}
+
+
+#commentTable .comment.deleted > .body {
+    border-bottom: none;
+    border-radius: 0.375rem;
+    color: #808b96;
+    font-style: italic;
 }
 
 #commentTable .comment > .foot {
@@ -308,6 +363,15 @@
     cursor: pointer;
 }
 
+#commentTable .comment.modifying > .foot > .action[rel="reply"] {
+    display: none;
+}
+
+
+#commentTable .comment > .foot > .action:hover {
+    text-decoration: underline;
+}
+
 #commentTable .comment.replying > .foot > .action[rel="reply"] {
     display: none;
 }
@@ -320,38 +384,31 @@
     display: inline-block;
 }
 
-#commentTable .comment > .foot > .action:hover {
-    text-decoration: underline;
-}
-
-#commentTable .comment.mine > .head {
-    background-color: #5dade2;
-}
-
-#commentTable .comment.sub {
-    margin-left: 3rem;
-}
-
 #commentTable .comment > .reply-form {
     height: 0;
-    box-sizing: border-box;
-    margin-top: 0;
-    overflow: hidden;
     background-color: #ffffff;
     border-radius: 0.375rem;
-    padding-top: 0;
-    padding-left: 0.75rem;
-    padding-bottom: 0;
+    box-sizing: border-box;
+    margin-top: 0;
     margin-left: 3rem;
+    overflow: hidden;
+    padding: 0 0.75rem;
     transition-duration: 250ms;
-    transition-timing-function: ease;
     transition-property: height, margin-top, padding-top, padding-bottom;
+    transition-timing-function: ease;
 
     align-items: stretch;
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
     justify-content: flex-start;
+}
+
+#commentTable .comment.replying > .reply-form {
+    height: 5rem;
+    margin-top: 0.375rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 
 #commentTable .comment > .reply-form > .label {
@@ -363,23 +420,11 @@
     justify-content: flex-start;
 }
 
-#commentTable .comment.replying > .reply-form {
-    height: 5rem;
-    margin-top: 0.375rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-}
-
-#commentTable .comment > .reply-form > .label > .common-field{
+#commentTable .comment > .reply-form > .label > .common-field {
     flex: 1;
 }
 
-#commentTable .comment.deleted > .body {
-    background-color: #eaecee;
-    border-radius: 0.375rem;
-    color: #808b96;
-    font-style: italic;
-}
+
 
 
 

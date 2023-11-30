@@ -1,19 +1,7 @@
-if (document.head.querySelector(':scope > meta[name="_board-status"]').getAttribute('content') == 'false') { //존재하지 않는 게시판이면
+if (document.head.querySelector(':scope > meta[name="_allowed-status"]').getAttribute('content') === 'false') {
     dialog.show({
         title: '경고',
-        content: '존재하지 않는 게시판입니다.',
-        buttons: [dialog.createButton('확인', function () {
-            if (history.length > 1) {
-                history.back(); // 뒤로가는 거
-            } else {
-                window.close(); // 화면을 닫는다.
-            }
-        })]
-    })
-} else if (document.head.querySelector(':scope > meta[name="_allowed-status"]').getAttribute('content') === 'false') {
-    dialog.show({
-        title: '경고',
-        content: '해당 게시판에 게시글을 작성할 권한이 없습니다.',
+        content: '삭제된 게시글이거나 게시글을 수정할 권한이 없습니다.',
         buttons: [dialog.createButton('확인', function () {
             if (history.length > 1) {
                 history.back(); // 뒤로가는 거
@@ -24,33 +12,33 @@ if (document.head.querySelector(':scope > meta[name="_board-status"]').getAttrib
     })
 }
 
-const writeForm = document.getElementById('writeForm');
+const modifyForm = document.getElementById('modifyForm');
 
-if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 true면
-    ClassicEditor.create(writeForm['content'], {
+if (modifyForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 true면
+    ClassicEditor.create(modifyForm['content'], {
         removePlugins: ['Markdown'],  //이미지 넣기 위해서 markdown을 제거
         simpleUpload: {
             uploadUrl: './image'
         }   //이미지를 넣기위한 설정
     })
         .then(function (editor) {
-            writeForm.editor = editor;
+            modifyForm.editor = editor;
         })
         .catch(function (error) {
             console.log(error);
         });
 
-    writeForm['fileAdd'].onclick = function (e){
+    modifyForm['fileAdd'].onclick = function (e){
         e.preventDefault();
 
-        writeForm['file'].click();
+        modifyForm['file'].click();
     }
-    writeForm['file'].onchange = function (){
-        const file = writeForm['file'].files[0];
+    modifyForm['file'].onchange = function (){
+        const file = modifyForm['file'].files[0];
         if (!file){ //file이 undefind일때
             return;
         }
-        const fileList = writeForm.querySelector('[rel="fileList"]');
+        const fileList = modifyForm.querySelector('[rel="fileList"]');
         const item = new DOMParser().parseFromString(`
                          <li class="item" rel="item">
                             <span class="progress" rel="progress"></span>
@@ -100,15 +88,15 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 
                     }
                     fileList.append(item);
                     fileList.scrollLeft = fileList.scrollWidth;
-                    writeForm['file'].value = '';
+                    modifyForm['file'].value = '';
 
     }
 
 
-    writeForm.onsubmit = function (e) {
+    modifyForm.onsubmit = function (e) {
         e.preventDefault();
 
-        const fileList = writeForm.querySelector('[rel="fileList"]');
+        const fileList = modifyForm.querySelector('[rel="fileList"]');
         const fileItems = Array.from(fileList.querySelectorAll(':scope > [rel="item"]'));
         if (fileItems.some(fileItem => !fileItem.classList.contains('complete'))){
             dialog.show({
@@ -119,25 +107,25 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 
             return false;
         }
 
-        if (writeForm['title'].value === '') {
+        if (modifyForm['title'].value === '') {
             dialog.show({
                 title: '경고',
                 content: '제목을 입력해 주세요.',
                 buttons: [dialog.createButton('확인', function () {
                     dialog.hide();
-                    writeForm['title'].focus();
+                    modifyForm['title'].focus();
                 })]
             });
             return false;
         }
-        if (!writeForm['title'].testRegex()) {
+        if (!modifyForm['title'].testRegex()) {
             dialog.show({
                 title: '경고',
                 content: '올바른 제목을 입력해 주세요.',
                 buttons: [dialog.createButton('확인', function () {
                     dialog.hide();
-                    writeForm['title'].focus();
-                    writeForm['title'].select();
+                    modifyForm['title'].focus();
+                    modifyForm['title'].select();
                 })]
             });
             return false;
@@ -147,9 +135,9 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 
         for (const fileItem of fileItems) {
             formData.append('fileIndexes', fileItem.dataset.index)
         }
-        formData.append('boardCode', writeForm['code'].value); //boardCode로 해야지 ArticleEntity가 boradCode로 맴버변수로 받기 때문에 writeForm['code']는 html의 name=code
-        formData.append('title', writeForm['title'].value); //'title'는 Entity객체의 필드값과 같아야함
-        formData.append('content', writeForm.editor.getData()); //content
+        formData.append('index', modifyForm['index'].value); //boardCode로 해야지 ArticleEntity가 boradCode로 맴버변수로 받기 때문에 modifyForm['code']는 html의 name=code
+        formData.append('title', modifyForm['title'].value); //'title'는 Entity객체의 필드값과 같아야함
+        formData.append('content', modifyForm.editor.getData()); //content
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== XMLHttpRequest.DONE) {
                 return;
@@ -168,12 +156,12 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 
                 case 'failure':
                     dialog.show({
                         title: '오류',
-                        content: '알수없는 이유로 게시글 작성에 실패하였습니다.',
+                        content: '알수없는 이유로 게시글을 수정하는데 실패하였습니다.',
                         buttons: [dialog.createButton('확인', dialog.hide)]
                     });
                     break;
                 case 'success':
-                    location.href = `./read?index=${responseObject['index']}`;// 자기가 쓴 게시판 번호로 이동
+                    location.href = `./read?index=${modifyForm['index'].value}`;// 자기가 쓴 게시판 번호로 이동
                     break;
                 default:
                     dialog.show({
@@ -184,8 +172,18 @@ if (writeForm) { //null도 아니고 undefinde도 아닌것 만약 존재하면 
             }
 
         }
-        xhr.open('POST', './write');
+        xhr.open('POST', './modify');
         xhr.send(formData);
         loading.show();
+    }
+}
+{
+    const fileList = modifyForm.querySelector('[rel="fileList"]');
+    const files = fileList.querySelectorAll(':scope > [rel="item"]');
+    for (const file of files){
+        const deleteEl = file.querySelector('[rel="delete"]');
+        deleteEl.onclick = function (){
+            file.remove();
+        }
     }
 }
