@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta name="_allowed-status" th:content="${article !== null}">
+    <meta name="_allowed-status" th:content="${article != null}">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>게시글 수정</title>
     <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
@@ -52,9 +52,9 @@
                 </div>
             </div>
             <div class="button-container">
-                <a class="common-button" href="#">돌아가기</a>
+                <a class="common-button" th:href="@{/article/read (index = ${article.getIndex()})}">돌아가기</a>
                 <span class="spring"></span>
-                <input class="common-button" type="submit" value="작성하기">
+                <input class="common-button" type="submit" value="수정하기">
             </div>
         </form>
     </div>

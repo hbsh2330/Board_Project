@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="_board-status" th:content="${board != null}">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>게시판 목록</title>
+    <link rel="stylesheet" th:href="@{/resources/stylesheets/common.css}">
+    <link rel="stylesheet" th:href="@{/board/resources/stylesheets/list.css}">
+    <script defer th:src="@{/resources/scripts/common.js}"></script>
+    <script defer th:src="@{/board/resources/scripts/list.js}"></script>
+</head>
+<body>
+<th:block th:replace="~{fragments.html :: common}"></th:block>
+<th:block th:replace="~{fragments.html :: header}"></th:block>
+<main class="content-container-wrapper" id="main">
+    <div class="content-container" th:if="${board != null}">
+        <div class="title-container">
+            <h1 class="title" th:text="${board.getText()}"></h1>
+        </div>
+        <table class="list-table" id="listTable">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성 일시</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="empty" th:if="${articles.length == 0}">
+                <td colspan="5">작성된 게시글이 없습니다.</td>
+            </tr>
+            <tr th:each="article : ${articles}">
+                <td th:text="${article.getIndex()}"></td>
+                <td>
+                    <a class="link"
+                       th:href="@{/article/read (index=${article.getIndex()}, page=${page.requestPage})}"
+                       th:text="${article.getTitle()}"></a>
+                </td>
+                <td th:text="${article.getUserNickname()}"></td>
+                <td th:text="${#dates.format(article.getWrittenAt(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${article.getView()}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <div class="page-button-container">
+                        <a class="button" th:href="@{/board/list (code = ${board.getCode()}, page = ${page.pageFrom - page.pageButtonCount})}" th:if="${page.requestPage != page.minPage}">&lt;&lt;</a>
+                        <a class="button" th:href="@{/board/list (code = ${board.getCode()}, page = ${page.requestPage - 1})}" th:if="${page.requestPage != page.minPage}">&lt;</a>
+                        <a class="button"
+                            th:each="pageNumber : ${#numbers.sequence(page.pageFrom, page.pageTo)}"
+                            th:href="@{/board/list (code = ${board.getCode()}, page = ${pageNumber})}"
+                            th:text="${pageNumber}"
+                            th:classappend="${pageNumber == page.requestPage} ? 'selected' : ''"></a>
+
+                        <a class="button" th:href="@{/board/list (code = ${board.getCode()}, page = ${page.requestPage + 1})}" th:if="${page.requestPage != page.maxPage}">&gt;</a>
+                        <a class="button" th:href="@{/board/list (code = ${board.getCode()}, page = ${page.pageTo + 1})}" th:if="${page.requestPage != page.maxPage}">&gt;&gt;</a>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</main>
+<th:block th:replace="~{fragments.html :: footer}"></th:block>
+</body>
+</html>

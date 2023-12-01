@@ -143,6 +143,7 @@ comment.append = function (allComments, targetComment, step) {
             <div class="body">
             <span class="content" rel="content">${typeof targetComment['content'] === 'string' ? targetComment['content'] : '삭제된 댓글입니다.'}</span>
             ${typeof targetComment['content'] === 'string' ? `
+                <form class="modify-form" rel="modifyForm">
                  <textarea class="common-field" maxlength="1000" name="content" placeholder="답글을 입력해 주세요."></textarea>
                     <input class="common-button" type="submit" value="댓글 수정">
                 </form>` : ''}

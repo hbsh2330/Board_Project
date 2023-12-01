@@ -190,7 +190,7 @@ public class ArticleService {
                 : DeleteResult.FAILURE;
     }
 
-     public ModifyResult modify(ArticleEntity article, int[] fileIndexes, UserEntity user){
+     public ModifyResult modify(ArticleEntity article, int[] fileIndexes, UserEntity user){ // 게시판 수정
         if (!ArticleRegex.TITLE.matches(article.getTitle())){
             return ModifyResult.FAILURE;
         }
@@ -201,15 +201,24 @@ public class ArticleService {
         if (!dbArticle.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
             return ModifyResult.FAILURE;
         }
-        dbArticle.setTitle(article.getTitle())
-                .setContent(article.getContent())
-                .setModifiedAt(new Date());
+
         FileEntity[] originalFiles = this.getFilesOf(article);
         for (FileEntity originalFile : originalFiles){
-            if (Arrays.stream(fileIndexes).noneMatch(x -> x == originalFile.getIndex())){
+            if (Arrays.stream(fileIndexes).noneMatch(x -> x == originalFile.getIndex())){ //원래있는거랑 맞지않으면 파일 삭제하는거
+                this.articleMapper.deleteFileByIndex(originalFile.getIndex());
+            }
 
+        }
+        for (int fileIndex : fileIndexes){
+            if (Arrays.stream(originalFiles).noneMatch(x -> x.getIndex() == fileIndex)){ // 새 파일 더하는거
+                FileEntity dbFile = this.articleMapper.selectFileByIndexNoData(fileIndex);
+                dbFile.setArticleIndex(dbArticle.getIndex());
+                this.articleMapper.updateFileNoData(dbFile);
             }
         }
+         dbArticle.setTitle(article.getTitle())
+                 .setContent(article.getContent())
+                 .setModifiedAt(new Date());
         return this.articleMapper.updateArticle(dbArticle) > 0
                 ? ModifyResult.SUCCESS
                 : ModifyResult.FAILURE;

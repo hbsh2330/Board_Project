@@ -1,0 +1,123 @@
+@charset "UTF-8";
+
+#main > .content-container {
+    padding: 2rem 0;
+
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+#main > .content-container > .title-container {
+    margin-bottom: 1.5rem;
+}
+
+#main > .content-container > .title-container > .title {
+    font-size: 2.5rem;
+}
+
+#listTable {
+    border-collapse: separate;
+    border-spacing: 0 0.375rem;
+}
+
+#listTable td,
+#listTable th {
+    box-sizing: border-box;
+    padding: 0.5rem 0.75rem;
+}
+
+#listTable > thead > tr > th {
+    background-color: #566573;
+    color: #ffffff;
+    font-weight: inherit;
+    white-space: nowrap;
+}
+
+#listTable > thead > tr > th:first-of-type {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+#listTable > thead > tr > th:nth-of-type(2) {
+    width: 100%;
+}
+
+#listTable > thead > tr > th:last-of-type {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+#listTable > tbody > tr > td {
+    background-color: #ffffff;
+}
+
+#listTable > tbody > tr > td:first-of-type {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+#listTable > tbody > tr > td:nth-of-type(1),
+#listTable > tbody > tr > td:nth-of-type(4),
+#listTable > tbody > tr > td:nth-of-type(5) {
+    text-align: center;
+}
+
+#listTable > tbody > tr > td:not(:nth-of-type(2)) {
+    white-space: nowrap;
+}
+
+#listTable > tbody > tr > td:last-of-type {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+#listTable > tbody > tr.empty > td {
+    padding: 2rem 1rem;
+}
+
+#listTable > tfoot > tr > td > .page-button-container {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button {
+    background-color: #ffffff;
+    color: inherit;
+    padding: 0.5rem 0.625rem;
+    text-decoration: none;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button + .button {
+    border-left: 0.0625rem solid #eaecee;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button:hover {
+    background-color: #d5d8dca0;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button:first-of-type {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button:last-of-type {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+#listTable > tfoot > tr > td > .page-button-container > .button.selected {
+    background-color: #566573;
+    color: #ffffff;
+    cursor: default;
+    pointer-events: none;
+}
+
+
+
+
+

@@ -281,7 +281,7 @@ public class ArticleController {
                                   ) BoardEntity[] boards){
         ModelAndView modelAndView = new ModelAndView();
         ArticleDto article = this.articleService.getArticleDto(index);
-        if (article.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
+        if (!article.getUserEmail().equals(user.getEmail()) && !user.isAdmin()){
             article = null;
         } else {
             final String boardCode = article.getBoardCode();
@@ -302,6 +302,12 @@ public class ArticleController {
     public String postModify(@SessionAttribute(value = "user") UserEntity user,
                              @RequestParam(value = "fileIndexes") int[] fileIndexes,
                              ArticleEntity article){
-        return null;
+        if (fileIndexes == null){
+            fileIndexes = new int[0];
+        }
+        ModifyResult result = this.articleService.modify(article, fileIndexes, user);
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("result", result.name().toLowerCase());
+        return responseObject.toString();
     }
 }

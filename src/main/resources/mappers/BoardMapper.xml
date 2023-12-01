@@ -20,4 +20,32 @@
         ORDER BY `order`
     </select>
 
+    <select id="selectArticleDtosByPage"
+            resultType="com.yhp.studybbs.dtos.ArticleDto">
+        SELECT `article`.`index`        AS `index`,
+               `article`.`board_code`   AS `boardCode`,
+               `article`.`user_email`   AS `userEmail`,
+               `article`.`title`        AS `title`,
+               `article`.`content`      AS `content`,
+               `article`.`view`         AS `view`,
+               `article`.`written_at`   AS `writtenAt`,
+               `article`.`modified_at`  AS `modifiedAt`,
+               `article`.`deleted_flag` AS `isDeleted`,
+               `user`.`nickname`        AS `userNickname`
+        FROM `study_bbs`.`articles` AS `article`
+                 LEFT JOIN `study_bbs`.`users` AS `user` ON `article`.`user_email` = `user`.`email`
+        WHERE BINARY `article`.`board_code` = #{board.code}
+            AND `article`.`deleted_flag` = FALSE
+        ORDER BY `article`. `index` DESC
+        LIMIT #{page.countPerPage} OFFSET #{page.queryOffset}
+    </select>
+
+    <select id="selectArticleCountByBoard"
+            parameterType="com.yhp.studybbs.entities.BoardEntity"
+            resultType="int">
+        SELECT COUNT(0)
+        FROM `study_bbs`.`articles`
+        WHERE BINARY `board_code` = #{code}
+        AND `deleted_flag` = FALSE
+    </select>
 </mapper>
