@@ -155,13 +155,16 @@ public class UserService {
 
     public SendRegisterEmailResult sendRegisterEmail(EmailAuthEntity emailAuth) throws MessagingException {
         if (!UserRegex.EMAIL.matches(emailAuth.getEmail())) {
+            System.out.println("1");
             return SendRegisterEmailResult.FAILURE;
         }
         if (this.userMapper.selectUserByEmail(emailAuth.getEmail()) != null) {
+            System.out.println("2");
             return SendRegisterEmailResult.FAILURE_DUPLICATE_EMAIL; // 이미 가입된 이용자
         }
         UserService.randomize(emailAuth); // 인증번호 6자
 
+        System.out.println("3");
         new MailFactory(this.mailSender, this.templateEngine)
                 .setContextVariable("emailAuth", emailAuth) //MailFactory
                 .setTemplate("user/registerEmail")

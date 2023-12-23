@@ -44,7 +44,7 @@ mainForm['infoEmailSend'].onclick = function () {
     }
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
-    formData.append('emailInfo', mainForm['infoEmail'].value);
+    formData.append('email', mainForm['infoEmail'].value);
     xhr.onreadystatechange = function () {
         if (xhr.readyState !== XMLHttpRequest.DONE) {
             return;
@@ -140,7 +140,7 @@ mainForm['infoEmailVerify'].onclick = function () {
     }
     const xhr = new XMLHttpRequest();
     const formData = new FormData();
-    formData.append('emailInfo', mainForm['infoEmail'].value);
+    formData.append('email', mainForm['infoEmail'].value);
     formData.append('code', mainForm['infoEmailCode'].value);
     formData.append('salt', mainForm['infoEmailSalt'].value);
     xhr.onreadystatechange = function () {
