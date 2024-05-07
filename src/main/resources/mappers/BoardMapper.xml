@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yhp.studybbs.mappers.BoardMapper">
-    <select id="selectBoardByCode" resultType="com.yhp.studybbs.entities.BoardEntity">
+<mapper namespace="com.hbsh.bbs.mappers.BoardMapper">
+    <select id="selectBoardByCode" resultType="com.hbsh.bbs.entities.BoardEntity">
         SELECT `code`               AS `code`,
                `text`               AS `text`,
                `order`              AS `order`,
@@ -11,7 +11,7 @@
         LIMIT 1
     </select>
 
-    <select id="selectBoards" resultType="com.yhp.studybbs.entities.BoardEntity">
+    <select id="selectBoards" resultType="com.hbsh.bbs.entities.BoardEntity">
         SELECT `code`               AS `code`,
                `text`               AS `text`,
                `order`              AS `order`,
@@ -21,7 +21,7 @@
     </select>
 
     <select id="selectArticleDtosByPage"
-            resultType="com.yhp.studybbs.dtos.ArticleDto">
+            resultType="com.hbsh.bbs.dtos.ArticleDto">
         SELECT `article`.`index`        AS `index`,
                `article`.`board_code`   AS `boardCode`,
                `article`.`user_email`   AS `userEmail`,
@@ -41,7 +41,7 @@
     </select>
 
     <select id="selectArticleCountByBoard"
-            parameterType="com.yhp.studybbs.entities.BoardEntity"
+            parameterType="com.hbsh.bbs.entities.BoardEntity"
             resultType="int">
         SELECT COUNT(0)
         FROM `study_bbs`.`articles`

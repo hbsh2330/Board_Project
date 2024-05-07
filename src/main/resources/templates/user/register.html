@@ -18,7 +18,7 @@
     <img alt="X" class="close" rel="close" th:src="@{/user/resources/images/register.addressFind.close.png}">
     <div class="modal"></div>
 </div>
-<form class="content-container-wrapper" id="main" data-step="1" th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.yhp.studybbs.regexes.EmailAuthRegex)}">
+<form class="content-container-wrapper" id="main" data-step="1" th:with="userRegex = ${T(com.hbsh.bbs.regexes.UserRegex)}, emailAuthRegex = ${T(com.hbsh.bbs.regexes.EmailAuthRegex)}">
     <input hidden name="infoEmailSalt" type="hidden">
     <div class="content-container title-container">
         <h1 class="title">회원가입</h1>
@@ -74,7 +74,7 @@
             <label class="label email">
                 <span class="text">이메일</span>
                 <span class="horizontal">
-                    <input class="big common-field" maxlength="50" name="infoEmail" placeholder="이메일(user@sample.com)" type="email" th:data-regex="${userRegex.EMAIL.expression}">
+                    <input class="big common-field" maxlength="50" name="infoEmail" placeholder="이메일(user@sample.com)" th:data-regex="${userRegex.EMAIL.expression}">
                     <input class="common-button" name="infoEmailSend" type="button" value="인증번호 발송">
                 </span>
                 <span class="horizontal">

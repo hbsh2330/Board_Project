@@ -10,12 +10,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.yhp</groupId>
-    <artifactId>study-bbs</artifactId>
+    <groupId>com.hbsh</groupId>
+    <artifactId>bbs</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>study-bbs</name>
-    <description>study-bbs</description>
+    <name>bbs</name>
+    <description>bbs</description>
 
     <properties>
         <java.version>11</java.version>

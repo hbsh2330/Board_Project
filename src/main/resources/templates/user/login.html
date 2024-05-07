@@ -18,7 +18,7 @@
         <div class="title-container">
             <h1 class="title">로그인</h1>
         </div>
-        <form class="login-form" id="loginForm" th:with="userRegex = ${T(com.yhp.studybbs.regexes.UserRegex)}">
+        <form class="login-form" id="loginForm" th:with="userRegex = ${T(com.hbsh.bbs.regexes.UserRegex)}">
             <label class="label">
                 <span class="text">이메일</span>
                 <input autofocus class="common-field" maxlength="50" name="email" placeholder="이메일(user@sample.com)" type="email" th:data-regex="${userRegex.EMAIL.expression}">

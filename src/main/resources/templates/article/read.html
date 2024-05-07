@@ -74,7 +74,7 @@
             </tr>
             </tfoot>
         </table>
-        <form class="comment-form" id="commentForm" th:with="commentRegex = ${T(com.yhp.studybbs.regexes.CommentRegex)}">
+        <form class="comment-form" id="commentForm" th:with="commentRegex = ${T(com.hbsh.bbs.regexes.CommentRegex)}">
             <input hidden name="articleIndex" type="hidden" th:value="${article.getIndex()}">
             <label class="label">
                 <span class="text">

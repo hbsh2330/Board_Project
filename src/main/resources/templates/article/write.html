@@ -21,7 +21,7 @@
         <div class="title-container">
             <h1 class="title">게시글 작성 - <th:block th:text="${board.getText()}"></th:block></h1>
         </div>
-        <form class="write-form" id="writeForm" th:with="articleRegex = ${T(com.yhp.studybbs.regexes.ArticleRegex)}">
+        <form class="write-form" id="writeForm" th:with="articleRegex = ${T(com.hbsh.bbs.regexes.ArticleRegex)}">
             <input hidden name="code" type="hidden" th:value="${board.getCode()}">
             <label class="label">
                 <span class="text">제목</span>
